@@ -97,10 +97,21 @@ $(function () {
     },
 
     initTypeahead: function () {
-      // $('#additional-info #journal input#publication').typeahead({
-      //   name: 'publication',
-      //   local: ['MM-ACM Multimedia', 'MM&Sec-Multimedia & Security', 'IEEE', 'ACM', 'MMM-Conference On Multimedia Modeling']
-      // });
+      $('#additional-info #journal input#publication').typeahead({
+        source: ['MM-ACM Multimedia', 'MM&Sec-Multimedia & Security', 'IEEE SOFTWARE', 'ACM', 'MMM-Conference On Multimedia Modeling', 'ACM COMPUTING SURVEYS']
+      });
+
+      $('#additional-info #conference input#publication').typeahead({
+        source: ['ISCA-International Symposium on Computer Architecture',
+        'CVPR-IEEE Conf on Comp Vision and Pattern Recognition',
+        'PODS-ACM SIGMOD Conf on Principles of DB Systems',
+        'CIKM-Intl. Conf on Information and Knowledge Management',
+        'SIGMOD-ACM SIGMOD Conf on Management of Data',
+        'HPCA: IEEE Symp on High-Perf Comp Architecture',
+        'IEEE/WIC International Joint Conf on Web Intelligence and Intelligent Agent Technology',
+        'ACM-MM: ACM Multimedia Conference']
+      });
+
     }
   }
   literatureUploader.init();

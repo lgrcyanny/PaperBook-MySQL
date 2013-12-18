@@ -5,7 +5,7 @@
 <% script('/lib/jquery/js/jquery.fileupload.js') -%>
 <% script('/js/fileuploader.js') -%>
 <% script('/js/literature-uploader.js') -%>
-
+<% script('/lib/bootstrap/js/bootstrap3-typeahead.min.js') -%>
 <div class="row">
   <div id="uploadPanel" class="">
     <!--Basic Info-->
@@ -177,7 +177,7 @@
           </div>
 
           <div class="form-group">
-            <label for="editor" class="col-md-1 control-label">Editor</label>
+            <label for="editor" class="col-md-1 control-label">Editors</label>
             <div class="col-md-11">
               <input type="text" name="editors" id="editors" class="form-control" placeholder="Editors" value="<%=literature.editors ? literature.editors : '' %>">
             </div>
@@ -216,7 +216,7 @@
           </div>
 
           <div class="form-group">
-            <label for="editor" class="col-md-1 control-label">Editor</label>
+            <label for="editor" class="col-md-1 control-label">Editors</label>
             <div class="col-md-11">
               <input type="text" name="editors" id="editors" class="form-control" placeholder="Editors" value="<%=literature.editor ? literature.editor : '' %>">
             </div>
@@ -229,7 +229,7 @@
           <div class="form-group">
             <label for="publication" class="col-md-1 control-label">Publication</label>
             <div class="col-md-11">
-              <input type="text" name="publication" id="publication"  class="form-control" placeholder="Publication" value="<%=literature.publication ? literature.publication : '' %>">
+              <input type="text" data-provide="typeahead" autocomplete="off" name="publication" id="publication"  class="form-control" placeholder="Publication" value="<%=literature.publication ? literature.publication : '' %>">
             </div>
           </div>
 
@@ -255,7 +255,7 @@
           <div class="form-group">
             <label for="publication" class="col-md-1 control-label">Publication</label>
             <div class="col-md-11">
-              <input type="text" name="publication" id="publication" class="form-control" placeholder="Publication" value="<%=literature.publication ? literature.publication : '' %>">
+              <input type="text" data-provide="typeahead" autocomplete="off" name="publication" id="publication" class="form-control" placeholder="Publication" value="<%=literature.publication ? literature.publication : '' %>">
             </div>
           </div>
 
