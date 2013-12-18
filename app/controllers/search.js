@@ -7,5 +7,5 @@ exports.index = function (req, res) {
 exports.showSearchResults = function (req, res) {
   res.render('search/results', {
     title: 'Search Results'
-  })
+  });
 }

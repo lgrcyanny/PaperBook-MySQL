@@ -11,11 +11,12 @@ var async = require('async')
 var users = require('../app/controllers/users');
 var search = require('../app/controllers/search');
 var auth = require('./middlewares/authorization');
-var literature = require('../app/controllers/literature');
+var literatures = require('../app/controllers/literatures');
 
 
 /**
  * Expose routes
+ * Watch out:  the order of routes is really important
  */
 
 module.exports = function (app, passport) {
@@ -41,10 +42,21 @@ module.exports = function (app, passport) {
 
   // search route
   app.get('/search/results', search.showSearchResults);
-  app.get('/literature/1', literature.fetchById);
 
   // Literature Route
-  app.post('/literature', literature.create);
+  app.post('/literatures', literatures.create);
+  app.get('/literatures/upload', auth.requiresSignin, literatures.showUploadPage);
+  app.post('/literatures/upload/files/literature', literatures.uploadFileLiterature);
+  app.post('/literatures/upload/files/accessory', literatures.uploadFileAccessory);
+  app.post('/literatures/upload/files/remove', literatures.removeFile);
 
+  app.get('/literatures/update/:literatureId', literatures.showUpdatePage);
+  app.post('/literatures/update/:updateId', literatures.update);
+
+  app.get('/myliterature', auth.requiresSignin, literatures.showMyLiteraturePage);
+  app.post('/literatures/remove/:removeId', literatures.remove);
+
+  app.get('/literatures/detail/:literatureId', literatures.showDetailPage);
+  app.param('literatureId', literatures.fetchById);
 
 }

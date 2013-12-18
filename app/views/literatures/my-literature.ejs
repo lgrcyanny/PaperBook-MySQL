@@ -1,0 +1,47 @@
+<% layout('../layouts/default') -%>
+<% script('/js/my-literature.js') %>
+
+<div class="row">
+  <h3>My Literature</h3>
+  <a href="/literatures/upload" id="addLiterature" class="btn btn-warning">
+    <span class="glyphicon glyphicon-plus"></span>
+    <span>Upload Literature</span>
+  </a>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th class="col-md-1">#</th>
+        <th class="col-md-6">Title</th>
+        <th class="col-md-3">Upload At</th>
+        <th class="col-md-1">Operation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for (var i = 0; i < literatures.length; i++) { %>
+      <% var literature = literatures[i]; %>
+        <tr>
+          <td><%=i + 1 %></td>
+          <td><% if (literature.title) { %>
+            <a href="/literatures/<%=literature.id %>">
+              <%=literature.title.length < 80 ? literature.title : literature.title.substr(0, 80) + '...' %>
+            </a>
+            <% } else { %>
+            <%='No title yet!' %>
+            <% } %>
+          </td>
+
+          <td>
+            <%=moment(literature.add_at).format('YYYY-MM-DD HH:mm') %>
+          </td>
+
+          <td>
+            <a href="/literatures/update/<%=literature.id %>">
+              <span class="glyphicon glyphicon-wrench"></span>
+            </a>
+            <span class="glyphicon glyphicon-trash remove-literature" data-requesturl="/literatures/remove/<%=literature.id %>" style="color: #08c; cursor: pointer"></span>
+          </td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>

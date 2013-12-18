@@ -8,13 +8,9 @@ module.exports = {
   table: 'users',
 
   find: function (condition, cb) {
-    var connection = utils.getDBConnection();
-    utils.connectToDB(connection);
-    connection.query('SELECT * FROM ?? WHERE ?', [this.table, condition], function (err, res) {
-      if (err) cb(err);
-      cb(null, res);
-    });
-    utils.endDBConnection(connection);
+    var query = 'SELECT * FROM ?? WHERE ?';
+    var data = [this.table, condition];
+    utils.exec(query, data, cb);
   },
 
   findById: function (id, cb) {
@@ -39,7 +35,6 @@ module.exports = {
       if (err) {
         cb(err);
       }
-      user.id = res.insertId;
       cb(null, res.insertId);
     });
     utils.endDBConnection(connection);

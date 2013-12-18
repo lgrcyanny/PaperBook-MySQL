@@ -48,7 +48,7 @@ exports.session = function (req, res) {
  * Create user
  */
 
-exports.create = function (req, res) {
+exports.create = function (req, res, next) {
   var user = req.body;
   usermodel.save(user, function (err, insertId) {
     if (err) {
@@ -62,9 +62,10 @@ exports.create = function (req, res) {
     // manually login the user once successfully signed up
     req.login(user, function(err) {
       if (err) {
-        throw err;
+        console.log(err);
+        next();
       }
-      return res.redirect('/')
+      return res.redirect('/');
     });
   });
 }
@@ -82,7 +83,7 @@ exports.showProfile = function (req, res) {
 }
 
 exports.showtestuser = function (req, res) {
-  usermodel.findById(1, function (err, results) {
+  usermodel.find(null, function (err, results) {
     res.send(results);
   });
 }

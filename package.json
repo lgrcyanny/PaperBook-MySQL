@@ -36,7 +36,8 @@
     "moment": "latest",
     "ejs-locals": "~1.0.2",
     "less-middleware": "~0.1.14",
-    "mysql": "~2.0.0-rc1"
+    "mysql": "~2.0.0-rc1",
+    "mkdirp": "~0.3.5"
   },
   "devDependencies": {
     "supertest": "latest",

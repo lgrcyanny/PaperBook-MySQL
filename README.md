@@ -10,13 +10,15 @@
 
 ## Install
 
-**NOTE:** You need to have node.js, mongodb installed
+**NOTE:** You need to have node.js, mysql installed <BR>
 1. Clone the project
 ```sh
   $ git clone https://github.com/lgrcyanny/PaperBook
   $ npm install
   $ cp config/config.disk.js config/config.js
 ```
+Please config your mysql in the `config.js`;
+
 2. Install mysql[http://dev.mysql.com/downloads/]
 
 3. Start mysql service
@@ -32,7 +34,9 @@
 ```sh
   $ npm start
 ```
-4. Then visit [http://localhost:3000/](http://localhost:3000/)
+6. Then visit [http://localhost:3000/](http://localhost:3000/)
+
+7. **NOTE:**, the database is empty, please build it by yourself, and the uploads dir is not include, it will create when you upload files.
 
 ## Related modules
 [node-express-mongoose-demo](https://github.com/madhums/node-express-mongoose-demo)
