@@ -9,8 +9,8 @@ module.exports = function (passport, config) {
   });
 
   passport.deserializeUser(function(id, done) {
-    usermodel.findById(id, function (err, user) {
-      done(err, user);
+    usermodel.findById(id, function (err, results) {
+      done(err, results[0]);
     });
   });
 
@@ -23,11 +23,11 @@ module.exports = function (passport, config) {
       usermodel.find({ email: email }, function (err, results) {
         if (err) { return done(err) }
         if (results.length !== 1) {
-          return done(null, false, { message: 'Unknown user' })
+          return done(null, false, { message: 'Unknown user' + email })
         }
         var user = results[0];
         if (!usermodel.authenticate(password, user)) {
-          console.log('invalid password');
+          console.log('Invalid password');
           return done(null, false, { message: 'Invalid password' })
         }
         return done(null, user);

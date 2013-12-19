@@ -10,8 +10,8 @@ var usermodel = require('../models/user.js');
  */
 exports.showSignIn = function (req, res) {
   res.render('users/signin', {
-    title: 'Sign In',
-    message: req.flash('errors')
+    title: 'Sign in',
+    message: req.flash('error'),
   });
 }
 
@@ -20,7 +20,8 @@ exports.showSignIn = function (req, res) {
  */
 exports.showSignUp = function (req, res) {
   res.render('users/signup', {
-    title: 'Sign up'
+    title: 'Sign up',
+    error: ''
   });
 }
 
@@ -50,23 +51,24 @@ exports.session = function (req, res) {
 
 exports.create = function (req, res, next) {
   var user = req.body;
-  usermodel.save(user, function (err, insertId) {
+  usermodel.save(user, function (err, result) {
     if (err) {
-      console.log(err);
       return res.render('users/signup', {
-        errors: err,
+        error: "Your Email or Username already exists.",
         title: 'Sign up'
       });
     }
-    user.id = insertId;
-    // manually login the user once successfully signed up
-    req.login(user, function(err) {
-      if (err) {
-        console.log(err);
-        next();
-      }
-      return res.redirect('/');
-    });
+    if (result) {
+      user.id = result.insertId;
+      // manually login the user once successfully signed up
+      req.login(user, function(err) {
+        if (err) {
+          //console.log(err);
+          next(err);
+        }
+        return res.redirect('/');
+      });
+    }
   });
 }
 
@@ -96,8 +98,9 @@ exports.list = function (req, res) {
  * Find user by id
  */
 exports.user = function (req, res, next, id) {
-  usermodel.findById(id, function (err, user) {
+  usermodel.findById(id, function (err, results) {
     if (err) return next(err);
+    var user = results[0];
     if (!user) return next(new Error('Failed to load User ' + id));
     req.profile = user;
     next();

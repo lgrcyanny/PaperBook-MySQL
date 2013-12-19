@@ -22,7 +22,7 @@
         <tr>
           <td><%=i + 1 %></td>
           <td><% if (literature.title) { %>
-            <a href="/literatures/<%=literature.id %>">
+            <a href="/literatures/detail/<%=literature.id %>">
               <%=literature.title.length < 80 ? literature.title : literature.title.substr(0, 80) + '...' %>
             </a>
             <% } else { %>

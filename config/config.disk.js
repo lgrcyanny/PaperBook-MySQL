@@ -11,6 +11,7 @@ module.exports = {
       database: 'paperbook'
     },
     root: rootPath,
+    uploadDir: rootPath + '/uploads',
     app: {
       name: 'paperbook'
     }
@@ -23,6 +24,7 @@ module.exports = {
       database: 'paperbook'
     },
     root: rootPath,
+    uploadDir: rootPath + '/uploads',
     app: {
       name: 'PaperBook'
     }
@@ -35,6 +37,7 @@ module.exports = {
       database: 'paperbook'
     },
     root: rootPath,
+    uploadDir: rootPath + '/uploads',
     app: {
       name: 'PaperBook'
     }

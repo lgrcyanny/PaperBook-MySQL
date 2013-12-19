@@ -27,17 +27,19 @@ exports.showUploadPage = function (req, res) {
   });
 }
 
-exports.create = function (req, res) {
+exports.create = function (req, res, next) {
   //console.log(req.body);
   var literature = wrapLiteratureForDBSave(req.user.id, req.body.literature);
   literatureModel.save(literature, function (err, result) {
     if (err) {
-      throw err;
+      return next(err);
     }
-    res.send({
-      success: true,
-      literatureId: result.insertId
-    });
+    if (result) {
+      res.send({
+        success: true,
+        literatureId: result.insertId
+      });
+    }
   });
 }
 
@@ -51,18 +53,20 @@ exports.showUpdatePage = function (req, res, next) {
   });
 }
 
-exports.update = function (req, res) {
+exports.update = function (req, res, next) {
   var id = req.param('updateId');
   var literature = wrapLiteratureForDBSave(req.user.id, req.body.literature);
   literatureModel.update (id, literature, function (err, result) {
     if (err) {
-      throw err;
+      return next(err);
     }
-    console.log(result);
-    res.send({
-      success: true,
-      literatureId: id
-    });
+    if (result) {
+      console.log(result);
+      res.send({
+        success: true,
+        literatureId: id
+      });
+    }
   });
 }
 
@@ -99,11 +103,11 @@ exports.removeFile = function (req, res) {
 }
 
 
-exports.showMyLiteraturePage = function (req, res) {
+exports.showMyLiteraturePage = function (req, res, next) {
   var userid = req.user.id;
   literatureModel.findByUser(userid, function (err, results) {
     if (err) {
-      throw err;
+      return next(err);
     }
     //console.log(results);
     res.render('literatures/my-literature', {
