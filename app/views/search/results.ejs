@@ -6,7 +6,7 @@
     </div>
     <div id="searchResults">
       <ul class="list-unstyled">
-        <% results.forEach(function (result,index) {%>
+        <% results.forEach(function (result,index) { %>
         <li>
           <h4><a href="#"><%= result.title %></a></h4>
           <p>
@@ -16,13 +16,27 @@
         <% }) %>
       </ul>
       <ul class="pagination">
-        <li class="disabled"><a href="#">&laquo;</a></li>
-        <li class="active"><a href="#">1</a></li>
-        <li><a href="#">2</a></li>
-        <li><a href="#">3</a></li>
-        <li><a href="#">4</a></li>
-        <li><a href="#">5</a></li>
-        <li><a href="#">&raquo;</a></li>
+        <!-- first page -->
+        <% if (isFirstPage) { %>
+          <li class="disabled"><a href="#">&laquo;</a></li>
+        <% } else{ %>
+          <li><a href="?p=1">&laquo;</a></li>
+        <% }; %>
+
+        <% for (var i = 1; i <= total; i++) { %>
+          <% if (i==page) { %>
+            <li class="active"><a href="?p=<%= i %>"><%= i %></a></li>
+          <% }else{ %>
+            <li><a href="?p=<%= i %>"><%= i %></a></li>
+          <% }; %>
+        <% }; %>
+
+        <!-- last page -->
+        <% if (isLastPage) { %>
+          <li class="disabled"><a href="#">&raquo;</a></li>
+        <% } else{ %>
+          <li><a href="?p=<%= total %>">&raquo;</a></li>
+        <% }; %>
       </ul>
   </div>
 </div>
