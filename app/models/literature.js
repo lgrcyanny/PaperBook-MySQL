@@ -1,5 +1,5 @@
 var utils = require('../../lib/utils');
-var squel=require('squel');
+var squel = require('squel');
 
 module.exports = {
   table: 'literatures',
@@ -29,7 +29,9 @@ module.exports = {
     var data = [this.table, userid];
     utils.exec(query, data, cb);
   },
-  findByTitle: function(title, callback) {
+
+  findByTitle: function(title, page, pageSize, callback) {
+    
     var words = title.split(' '),
       query = squel.select()
         .from('literatures');
@@ -38,7 +40,27 @@ module.exports = {
       query = query.where("title like '%" + word + "%'")
     });
 
+    query.offset((page-1)*pageSize)
+      .limit(pageSize);
+
     console.log(query.toString());
+    utils.exec(query.toString(), null, function(err, results) {
+      if (err) {
+        callback(err)
+      };
+      callback(null, results);
+    });
+  },
+
+  findAll: function(title, callback) {
+    var words = title.split(' '),
+      query = squel.select()
+        .from('literatures');
+
+    words.forEach(function(word, index) {
+      query = query.where("title like '%" + word + "%'")
+    });
+
     utils.exec(query.toString(), null, function(err, results) {
       if (err) {
         callback(err)
