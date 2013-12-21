@@ -27,5 +27,11 @@ module.exports = {
     var query = 'SELECT id, title, add_at FROM ?? WHERE user_id = ? ORDER BY add_at desc';
     var data = [this.table, userid];
     utils.exec(query, data, cb);
+  },
+
+  findByTitle: function (title, cb) {
+    var query = 'SELECT id, title FROM ?? WHERE title like ?';
+    var data = [this.table, '%' + title + '%'];
+    utils.exec(query, data, cb);
   }
 }
