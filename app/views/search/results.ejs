@@ -2,7 +2,7 @@
 <div class="row">
   <div id="resultsPanel" class="col-md-6 col-md-offset-1">
     <div id="resultStats">
-      <small>About 15 results (0.34 seconds) </small>
+      <small>About <%= total %> results (<%= time %> seconds) </small>
     </div>
     <div id="searchResults">
       <ul class="list-unstyled">
@@ -23,7 +23,7 @@
           <li><a href="?p=1">&laquo;</a></li>
         <% }; %>
 
-        <% for (var i = 1; i <= total; i++) { %>
+        <% for (var i = 1; i <= totalPage; i++) { %>
           <% if (i==page) { %>
             <li class="active"><a href="?p=<%= i %>"><%= i %></a></li>
           <% }else{ %>
@@ -35,7 +35,7 @@
         <% if (isLastPage) { %>
           <li class="disabled"><a href="#">&raquo;</a></li>
         <% } else{ %>
-          <li><a href="?p=<%= total %>">&raquo;</a></li>
+          <li><a href="?p=<%= totalPage %>">&raquo;</a></li>
         <% }; %>
       </ul>
   </div>

@@ -1,36 +1,37 @@
 //Literature.plugin(textSearch);
 var Search = require('../models/search');
 
+
 exports.index = function(req, res) {
   res.render("search/index", {});
 };
 
 exports.showSearchResults = function(req, res) {
-  var title = req.body.query;
-  if (!title && title != '') {
-    title = req.session.query;
-  }
-  var page = req.query.p ? parseInt(req.query.p) : 1;
-  Search.findByTitle(title, function(results) {
-    var total = results.length;
+  var title = (req.body.query === undefined) ? req.session.query : req.body.query;
 
-    req.session.query = title;
-    var limitedResults = [];
-    var first = page * 10 - 10;
-    var length = total - page * 10 + 10;
-    if (length > 10) {
-      length = 10;
+  var startTime = new Date().getTime();
+  var page = req.query.p ? parseInt(req.query.p) : 1;
+  Search.findByTitle(title, function(err,results) {
+    if (err) {
+      results=[];
     };
-    console.log('results_page_' + page+':show results [' + first + "," + (first + length) + ")");
-    for (var i = first; i < first + length; i++) {
-      limitedResults.push(results[i]);
-    }
+    endTime = new Date().getTime();
+    req.session.query = title;
+
+    var total = results.length,
+      first = (page - 1) * 10,
+      length = ((total - first) > 10) ? 10 : (total - first),
+      limitedResults = results.slice(first, first + length);
+
+    console.log('results_page_' + page + ':show results [' + first + "," + (first + length) + ")");
     res.render('search/results', {
       title: 'results:',
       page: page,
-      total: Math.floor(total / 10) + 1,
+      total: total,
+      time: (endTime - startTime)/1000,
+      totalPage: Math.ceil(total / 10),
       isFirstPage: page == 1,
-      isLastPage: (page * 10) >= total && ((page - 1) * 10) < total,
+      isLastPage: page == this.totalPage,
       results: limitedResults
     });
   });

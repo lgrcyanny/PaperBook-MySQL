@@ -1,4 +1,5 @@
 var utils = require('../../lib/utils');
+var squel = require('squel');
 
 module.exports = {
   findAll: function(callback) {
@@ -13,16 +14,25 @@ module.exports = {
       callback(res);
     });
   },
-  findByTitle: function(title,callback) {
-    var query = "select * from literatures where title like '%"+title+"%'";
+  findByTitle: function(title, callback) {
+    var words = title.split(' '),
+      query = squel.select()
+        .from('literatures');
+    
+    words.forEach(function(word, index) {
+      query = query.where("title like '%" + word + "%'")
+    });
+
+    console.log(query.toString());
+    
     var connection = utils.getDBConnection();
     utils.connectToDB(connection);
-    connection.query(query, function(err, res) {
+    connection.query(query.toString(), function(err, results) {
       utils.endDBConnection(connection);
       if (err) {
         callback(err);
       }
-      callback(res);
+      callback(null,results);
     });
   }
 }
