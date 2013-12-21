@@ -42,7 +42,7 @@ module.exports = function (app, passport) {
 
   // search route
   app.get('/search/results', search.showSearchResults);
-  app.post('/search/results', search.showSearchResults);
+
   // Literature Route
   app.post('/literatures', literatures.create);
   app.get('/literatures/upload', auth.requiresSignin, literatures.showUploadPage);

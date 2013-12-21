@@ -6,14 +6,14 @@
     </div>
     <div id="searchResults">
       <ul class="list-unstyled">
-        <% results.forEach(function (result,index) { %>
+        <% for (var i = 0; i < results.length; i++) { %>
         <li>
-          <h4><a href="#"><%= result.title %></a></h4>
+          <h4><a href="#"><%= results[i].title %></a></h4>
           <p>
-            <%= result.abstract %>
+            <%= results[i].abstract %>
           </p>
         </li>
-        <% }) %>
+        <% } %>
       </ul>
       <ul class="pagination">
         <!-- first page -->

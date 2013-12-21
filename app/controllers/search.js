@@ -1,17 +1,20 @@
 //Literature.plugin(textSearch);
-var Search = require('../models/search');
-
+var Literature = require('../models/literature');
+var querystring=require('querystring');
+var url=require('url');
 
 exports.index = function(req, res) {
   res.render("search/index", {});
 };
 
 exports.showSearchResults = function(req, res) {
-  var title = (req.body.query === undefined) ? req.session.query : req.body.query;
 
+  var title=querystring.parse(url.parse(req.url).query)["query"];
+  title = (title === undefined) ? req.session.query : title;
+  console.log(title);
   var startTime = new Date().getTime();
   var page = req.query.p ? parseInt(req.query.p) : 1;
-  Search.findByTitle(title, function(err,results) {
+  Literature.findByTitle(title, function(err,results) {
     if (err) {
       results=[];
     };
