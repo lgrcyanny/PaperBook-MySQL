@@ -3,7 +3,7 @@ var Literature = require('../models/literature');
 
 exports.index = function (req, res) {
   res.render("search/index", {});
-};
+}
 
 exports.showSearchResults = function (req, res) {
 
@@ -45,4 +45,4 @@ exports.showSearchResults = function (req, res) {
       results: results
     });
   });
-};
+}
