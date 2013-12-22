@@ -26,7 +26,7 @@ exports.fetchById = function (req, res, next, id) {
 
 exports.fetchByTitle = function (req, res, next) {
   var title = req.query.title;
-  literatureModel.findByTitle(title, function (err, results) {
+  literatureModel.findByTitle(title, 1, 10, function (err, results) {
     if (err) {
       res.send({
         error: err,
