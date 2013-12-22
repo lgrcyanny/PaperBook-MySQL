@@ -17,6 +17,7 @@ var literatures = require('../app/controllers/literatures');
 /**
  * Expose routes
  * Watch out:  the order of routes is really important
+ * Watch out: To avoid 404 error, make sure there is no "/" at the end of each route path
  */
 
 module.exports = function (app, passport) {
@@ -49,6 +50,7 @@ module.exports = function (app, passport) {
   app.post('/literatures/upload/files/literature', literatures.uploadFileLiterature);
   app.post('/literatures/upload/files/accessory', literatures.uploadFileAccessory);
   app.post('/literatures/upload/files/remove', literatures.removeFile);
+  app.get('/literatures/upload/references/query', literatures.fetchByTitle);
 
   app.get('/literatures/update/:literatureId', literatures.showUpdatePage);
   app.post('/literatures/update/:updateId', literatures.update);
@@ -56,7 +58,12 @@ module.exports = function (app, passport) {
   app.get('/myliterature', auth.requiresSignin, literatures.showMyLiteraturePage);
   app.post('/literatures/remove/:removeId', literatures.remove);
 
+  app.get('/literatures/detail/cited', literatures.fetchCited);
+  app.post('/literatures/update/cited/remove', literatures.removeCited);
+
   app.get('/literatures/detail/:literatureId', literatures.showDetailPage);
+
+
   app.param('literatureId', literatures.fetchById);
 
 }

@@ -41,6 +41,10 @@ body {
   color: #08c;
   cursor: pointer;
 }
+div.form-group div.reference-item {
+  margin-top: 15px !important;
+  height: 30px;
+}
 div.error-block {
   width: 400px;
   margin-top: 100px;
