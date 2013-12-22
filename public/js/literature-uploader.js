@@ -4,8 +4,8 @@ $(function () {
     rootUrl: 'http://' + window.location.hostname + ':' + window.location.port,
     init: function () {
       this.addActionListener();
-      this.initAdditionInfoTab();
       this.initTypeahead();
+      this.addReferenceTypeaheadListener();
     },
 
     /**
@@ -13,23 +13,43 @@ $(function () {
      * @return {[Object]} the processed literature
      */
     handleForm: function () {
-      var inputs = $('input');
       var data = {};
-      // fetch basic info
-      $('#basic-info input:not(input[type="file"]), #basic-info select, #basic-info textarea').each(function () {
+      // fetch  info
+      $('div#upload-info div.tab-pane.active input:not(input[type="file"]), div#upload-info div.tab-pane.active texarea').each(function () {
          data[$(this).attr('name')] = $(this).val();
       });
 
-      // fetch additional info
-      $('#additional-info .tab-content div.active form input').each(function () {
-        data[$(this).attr('name')] = $(this).val();
-      })
+      if (data.hasOwnProperty('references[]')) {
+        delete data['references[]'];
+        var references = [];
+        $('div.form-group div.reference-item').each(function () {
+          var item = $(this);
+          var title = $(this).find('input[name="references[]"]').val();
+          if (title && title.length > 0) {
+            var type = $(this).find('select[name="reference-type"]').val();
+            var id = '';
+            // User regexp to parse id
+            var regexp = /^\[(\d+)\]-(.*)/ig;
+            var res = regexp.exec(title);
+            if (res !== null && res.length >= 3) {
+              id = res[1];
+              title = res[2];
+            }
+            references.push({
+              id: id,
+              title: title,
+              type: type
+            });
+          }
+        });
+        data['references'] = references;
+      }
 
       // accessories file_path is special, handle it specially
-      if (data['accessories[]']) {
+      if (data.hasOwnProperty('accessories[]')) {
         delete data['accessories[]'];
         var accessories = [];
-        $('#basic-info input[name="accessories[]"]').each(function () {
+        $('div#upload-info input[name="accessories[]"]').each(function () {
           accessories.push($(this).val());
         })
         data['accessories'] = accessories;
@@ -75,33 +95,27 @@ $(function () {
         }
       });
 
-      $('select#category').on('change', function () {
-        var category = $('select#category option:selected').attr('rel');
-        $('#additional-info div.active').removeClass('active');
-        $('#additional-info div.active').removeClass('in');
-        $('#additional-info #' + category).addClass('active');
-        $('#additional-info #' + category).addClass('in');
-
-        $('#additional-info ul.dropdown-menu li.active').removeClass('active');
-        $('#additional-info ul.dropdown-menu li a[href="#' + category + '"]').parent('li').addClass('active');
+      $('#add-reference-btn').click(function (e) {
+        var item = $(this).parents('div.reference-item').clone();
+        item.find('label:first-child').text('');
+        item.find('button').removeClass('btn-success').addClass('btn-danger');
+        item.find('button span').removeClass('glyphicon-plus').addClass('glyphicon-remove');
+        item.find('button').unbind('click').click(function () {
+          $(this).parents('div.reference-item').remove();
+        })
+        item.find('input').val('');
+        $(this).parents('.form-group').append(item);
+        self.addReferenceTypeaheadListener();
+        e.preventDefault();
       })
     },
 
-    initAdditionInfoTab: function () {
-      var activeTab = $('#additional-info ul.dropdown-menu li.active');
-      if (activeTab.length == 0) {
-        $('#additional-info ul.dropdown-menu li a[href="#book"]').parent('li').addClass('active');
-        $('#additional-info div#book').addClass('active');
-        $('#additional-info div#book').addClass('in');
-      }
-    },
-
     initTypeahead: function () {
-      $('#additional-info #journal input#publication').typeahead({
+      $('#Journal input#publication').typeahead({
         source: ['MM-ACM Multimedia', 'MM&Sec-Multimedia & Security', 'IEEE SOFTWARE', 'ACM', 'MMM-Conference On Multimedia Modeling', 'ACM COMPUTING SURVEYS']
       });
 
-      $('#additional-info #conference input#publication').typeahead({
+      $('#Conference input#publication').typeahead({
         source: ['ISCA-International Symposium on Computer Architecture',
         'CVPR-IEEE Conf on Comp Vision and Pattern Recognition',
         'PODS-ACM SIGMOD Conf on Principles of DB Systems',
@@ -111,8 +125,34 @@ $(function () {
         'IEEE/WIC International Joint Conf on Web Intelligence and Intelligent Agent Technology',
         'ACM-MM: ACM Multimedia Conference']
       });
+    },
 
+    addReferenceTypeaheadListener: function () {
+      var self = this;
+      $('.reference-item input').typeahead({
+        source: function (query, process) {
+          $.ajax({
+            url: self.rootUrl + '/literatures/upload/references/query',
+            type: 'GET',
+            data: {
+              title: query.trim()
+            },
+            success: function (res) {
+              var data = [];
+              if (res.success) {
+                var literatures = res.literatures;
+                for (var i = 0; i < literatures.length; i++) {
+                  var item = literatures[i];
+                  data.push('[' +item.id + ']-' + item.title);
+                }
+              }
+              process(data);
+            }
+          })
+        }
+      });
     }
   }
+
   literatureUploader.init();
 });

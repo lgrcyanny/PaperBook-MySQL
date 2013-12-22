@@ -2,6 +2,7 @@
  * Module Dependencies
  */
 var literatureModel = require('../models/literature');
+var referenceModel = require('../models/reference');
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 var path = require('path');
@@ -12,33 +13,90 @@ var config = require('../../config/config')[env];
 exports.fetchById = function (req, res, next, id) {
   var literature = literatureModel.findById(id, function (err, results) {
     if (err) return next(err);
+    if (results.length === 0) {
+      return next({
+        message: 'not found'
+      });
+    }
     var literature = wrapLiteratureForShow(results[0]);
     req.literature = literature;
     next();
   });
 }
 
+exports.fetchByTitle = function (req, res, next) {
+  var title = req.query.title;
+  literatureModel.findByTitle(title, 1, 10, function (err, results) {
+    if (err) {
+      res.send({
+        error: err,
+        success: false
+      })
+    }
+    res.send({
+      success: true,
+      literatures: results
+    })
+  });
+}
+
 exports.showUploadPage = function (req, res) {
   res.render('literatures/upload', {
     title: 'Upload literature',
-    literature: {},
     returnUrl: '',
-    requestUrl: '/literatures'
+    requestUrl: '/literatures',
+    categories: [{
+      name: 'Book',
+      info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'publisher', 'edition', 'editors', 'isbn']
+    },
+    {
+      name: 'BookSection',
+      info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'book_name','publisher', 'edition', 'editors', 'isbn']
+    },
+    {
+      name: 'Journal',
+      info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'publication', 'volume', 'issue', 'doi']
+    },
+    {
+      name: 'Conference',
+      info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'publication', 'city', 'doi']
+    },
+    {
+      name: 'Thesis',
+      info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'college']
+    },
+    {
+      name: 'Online',
+      info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references']
+    },
+    {
+      name: 'Report',
+      info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references']
+    }],
+    referencesType: ['Mention', 'Related', 'Use', 'Compare', 'Unknown']
   });
 }
 
 exports.create = function (req, res, next) {
-  //console.log(req.body);
   var literature = wrapLiteratureForDBSave(req.user.id, req.body.literature);
   literatureModel.save(literature, function (err, result) {
     if (err) {
       return next(err);
     }
+    //console.log(req.body.literature.references);
     if (result) {
-      res.send({
-        success: true,
-        literatureId: result.insertId
-      });
+      // Since object param is parsed by reference, so references is stringified now.
+      var references = JSON.parse(req.body.literature.references);
+      referenceModel.save(result.insertId, references, function (err, saveRes) {
+        if (err) {
+          return next(err);
+        }
+
+        res.send({
+          success: true,
+          literatureId: result.insertId
+        });
+      })
     }
   });
 }
@@ -72,8 +130,10 @@ exports.update = function (req, res, next) {
 
 
 exports.showDetailPage = function (req, res) {
+  var literature = req.literature;
   res.render('literatures/detail', {
-    title: 'Cloud Computing'
+    title: literature.title,
+    literature: literature
   });
 }
 
@@ -132,6 +192,35 @@ exports.remove = function (req, res) {
   });
 }
 
+exports.fetchCited = function (req, res) {
+  var id = req.query.id;
+  referenceModel.findByCited(id, function (err, results) {
+    if (err) {
+      throw err;
+    }
+    res.send({
+      success: true,
+      results: results
+    });
+  })
+}
+
+exports.removeCited = function (req, res) {
+  var id = req.body.referenceId;
+  referenceModel.deleteByReference(id, function (err, results) {
+    if (err) {
+      res.send({
+        success: false,
+        error: err
+      })
+    }
+    res.send({
+      success: true,
+      results: results
+    })
+  })
+}
+
 /**
  * Private Functions
  */
@@ -174,14 +263,14 @@ var uploadFile = function (file, type, username, res) {
 
 var wrapLiteratureForDBSave = function (userid, literature) {
   if (literature.accessories) {
-    literature.accessories = literature.accessories.join(',');
-  } else {
-    literature.accessories = null;
+    literature.accessories = JSON.stringify(literature.accessories);
   }
 
   if (!literature.file_path) {
     literature.file_path = null;
   }
+
+  literature.references = JSON.stringify(literature.references);
 
   literature.user_id = userid;
   return literature;
@@ -193,7 +282,7 @@ var wrapLiteratureForShow = function (literature) {
   }
 
   if (literature.accessories) {
-    var accessories = literature.accessories.split(',');
+    var accessories = JSON.parse(literature.accessories);
     literature.accessories = [];
     for (var i = 0; i <  accessories.length; i++) {
       var item = accessories[i];
@@ -204,6 +293,7 @@ var wrapLiteratureForShow = function (literature) {
       literature.accessories.push(obj);
     }
   }
+
+  literature.references = JSON.parse(literature.references);
   return literature;
 }
-
