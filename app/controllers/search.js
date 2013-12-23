@@ -16,7 +16,7 @@ exports.showSearchResults = function (req, res) {
   title = (title === undefined) ? req.session.query : title;
 
   if (page == 1) {
-    Literature.findAll(title, function (err, results) {
+    Literature.findAllByTitle(title, function (err, results) {
       if (err) {
         results = []
       };
@@ -43,6 +43,14 @@ exports.showSearchResults = function (req, res) {
       isFirstPage: page == 1,
       isLastPage: page == this.totalPage,
       results: results
+    });
+  });
+}
+
+exports.showComplexSearchResults = function (res, req) {
+  Literature.findAll('a b c', 'd', 'e f', function (err, results) {
+    results.forEach(function (result, index) {
+      console.log(result.title);
     });
   });
 }

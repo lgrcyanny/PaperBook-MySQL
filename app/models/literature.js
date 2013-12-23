@@ -52,7 +52,7 @@ module.exports = {
     });
   },
 
-  findAll: function (title, callback) {
+  findAllByTitle: function (title, callback) {
     var words = title.split(' '),
       query = squel.select()
         .from('literatures');
@@ -60,6 +60,36 @@ module.exports = {
     words.forEach(function (word, index) {
       query = query.where("title like '%" + word + "%'")
     });
+
+    utils.exec(query.toString(), null, function (err, results) {
+      if (err) {
+        callback(err)
+      };
+      callback(null, results);
+    });
+  },
+
+  findAll: function (allWords, exactPhrase, oneWords, callback) {
+    var allWords = allWords.split(' '),
+      exactPhrase = exactPhrase,
+      oneWords = oneWords.split(' ');
+    console.log('allWords:', allWords);
+    console.log('exactPhrase:', exactPhrase);
+    console.log('oneWords:', oneWords);
+    var allWordsExpr = squel.expr(),
+      oneWordsExpr = squel.expr(),
+      query = squel.select()
+        .from('literatures');
+    allWords.forEach(function (word, index) {
+      allWordsExpr = allWordsExpr.and("title like '%" + word + "%'");
+    });
+    oneWords.forEach(function (word, index) {
+      oneWordsExpr = oneWordsExpr.or("title like '%" + word + "%'");
+    });
+    query = query.where(allWordsExpr)
+      .where("title like '%" + exactPhrase + "%'")
+      .where(oneWordsExpr);
+    console.log(query.toString());
 
     utils.exec(query.toString(), null, function (err, results) {
       if (err) {
