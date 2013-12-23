@@ -9,6 +9,37 @@ var path = require('path');
 var moment = require('moment');
 var env = process.env.NODE_ENV || 'development';
 var config = require('../../config/config')[env];
+var globalConfig = {
+  categories: [{
+    name: 'Book',
+    info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'publisher', 'edition', 'editors', 'isbn']
+  },
+  {
+    name: 'BookSection',
+    info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'book_name','publisher', 'edition', 'editors', 'isbn']
+  },
+  {
+    name: 'Journal',
+    info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'publication', 'volume', 'issue', 'doi']
+  },
+  {
+    name: 'Conference',
+    info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'publication', 'city', 'doi']
+  },
+  {
+    name: 'Thesis',
+    info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'college']
+  },
+  {
+    name: 'Online',
+    info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references']
+  },
+  {
+    name: 'Report',
+    info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references']
+  }],
+  referencesType: ['Mention', 'Related', 'Use', 'Compare', 'Unknown']
+}
 
 exports.fetchById = function (req, res, next, id) {
   var literature = literatureModel.findById(id, function (err, results) {
@@ -45,40 +76,14 @@ exports.showUploadPage = function (req, res) {
     title: 'Upload literature',
     returnUrl: '',
     requestUrl: '/literatures',
-    categories: [{
-      name: 'Book',
-      info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'publisher', 'edition', 'editors', 'isbn']
-    },
-    {
-      name: 'BookSection',
-      info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'book_name','publisher', 'edition', 'editors', 'isbn']
-    },
-    {
-      name: 'Journal',
-      info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'publication', 'volume', 'issue', 'doi']
-    },
-    {
-      name: 'Conference',
-      info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'publication', 'city', 'doi']
-    },
-    {
-      name: 'Thesis',
-      info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'college']
-    },
-    {
-      name: 'Online',
-      info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references']
-    },
-    {
-      name: 'Report',
-      info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references']
-    }],
-    referencesType: ['Mention', 'Related', 'Use', 'Compare', 'Unknown']
+    categories: globalConfig.categories,
+    referencesType: globalConfig.referencesType
   });
 }
 
 exports.create = function (req, res, next) {
   var literature = wrapLiteratureForDBSave(req.user.id, req.body.literature);
+  //console.log(req.body);
   literatureModel.save(literature, function (err, result) {
     if (err) {
       return next(err);
@@ -87,27 +92,37 @@ exports.create = function (req, res, next) {
     if (result) {
       // Since object param is parsed by reference, so references is stringified now.
       var references = JSON.parse(req.body.literature.references);
-      referenceModel.save(result.insertId, references, function (err, saveRes) {
-        if (err) {
-          return next(err);
-        }
-
+      if (references.length === 0) {
         res.send({
           success: true,
           literatureId: result.insertId
         });
-      })
+      } else {
+        referenceModel.save(result.insertId, references, function (err, saveRes) {
+          if (err) {
+            return next(err);
+          }
+
+          res.send({
+            success: true,
+            literatureId: result.insertId
+          });
+        });
+      }
     }
   });
 }
 
 exports.showUpdatePage = function (req, res, next) {
   var literature = req.literature;
-  res.render('literatures/upload', {
+  //console.log(literature);
+  res.render('literatures/update', {
     title: 'Update Literature',
     literature: literature,
     returnUrl: '/myliterature',
-    requestUrl: '/literatures/update/' + literature.id
+    requestUrl: '/literatures/update/' + literature.id,
+    categories: globalConfig.categories,
+    referencesType: globalConfig.referencesType
   });
 }
 
@@ -120,9 +135,26 @@ exports.update = function (req, res, next) {
     }
     if (result) {
       console.log(result);
-      res.send({
-        success: true,
-        literatureId: id
+      referenceModel.deleteByReference(id, function (err) {
+        if (err) {
+          return next(err);
+        }
+        var references = JSON.parse(literature.references);
+          if (references.length === 0) {
+            res.send({
+              success: true
+            });
+          } else {
+            referenceModel.save(id, references, function (err, refSaveRes) {
+              if (err) {
+                return next(err);
+              }
+              console.log(refSaveRes);
+              res.send({
+                success: true
+              });
+            });
+          }
       });
     }
   });
@@ -263,14 +295,18 @@ var uploadFile = function (file, type, username, res) {
 
 var wrapLiteratureForDBSave = function (userid, literature) {
   if (literature.accessories) {
-    literature.accessories = JSON.stringify(literature.accessories);
+    literature.accessories = literature.accessories.join(',');
   }
 
   if (!literature.file_path) {
     literature.file_path = null;
   }
 
-  literature.references = JSON.stringify(literature.references);
+  if (literature.references) {
+    literature.references = JSON.stringify(literature.references);
+  } else {
+    literature.references = JSON.stringify([]);
+  }
 
   literature.user_id = userid;
   return literature;
@@ -282,7 +318,7 @@ var wrapLiteratureForShow = function (literature) {
   }
 
   if (literature.accessories) {
-    var accessories = JSON.parse(literature.accessories);
+    var accessories = literature.accessories.split(',');
     literature.accessories = [];
     for (var i = 0; i <  accessories.length; i++) {
       var item = accessories[i];

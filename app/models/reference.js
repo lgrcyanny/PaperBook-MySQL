@@ -10,18 +10,18 @@ module.exports = {
     for (var i = 0; i < references.length; i++) {
       var item = references[i];
       if (item.id) {
-        values = values + '(' + '\'' +referenceId + '\'' + ', ' + '\'' + item.id + '\'' + ', ' + '\'' + item.type + '\')' + ',';
+        values = values + '(' + '\'' + referenceId + '\'' + ', ' + '\'' + item.id + '\'' + ', ' + '\'' + item.type + '\')' + ',';
       }
     }
     if (values.length === 0) {
-      cb (null, {
+      cb(null, {
         message: 'No Records INSERT'
       })
     } else {
       //console.log(values);
       values = values.substr(0, (values.length - 1));
       query = query + values;
-      console.log(query);
+      //console.log(query);
       utils.exec(query, null, cb);
     }
   },

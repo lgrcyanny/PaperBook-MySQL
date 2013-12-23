@@ -59,7 +59,6 @@ module.exports = function (app, passport) {
   app.post('/literatures/remove/:removeId', literatures.remove);
 
   app.get('/literatures/detail/cited', literatures.fetchCited);
-  app.post('/literatures/update/cited/remove', literatures.removeCited);
 
   app.get('/literatures/detail/:literatureId', literatures.showDetailPage);
 
