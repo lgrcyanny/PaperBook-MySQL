@@ -10,6 +10,7 @@ var async = require('async')
 
 var users = require('../app/controllers/users');
 var search = require('../app/controllers/search');
+var admin = require('../app/controllers/admin');
 var auth = require('./middlewares/authorization');
 var literatures = require('../app/controllers/literatures');
 
@@ -66,4 +67,6 @@ module.exports = function (app, passport) {
 
   app.param('literatureId', literatures.fetchById);
 
+  // Admin Route
+  app.get('/admin', admin.showPage);
 }
