@@ -41,6 +41,12 @@ body {
   color: #08c;
   cursor: pointer;
 }
+div.reference-item #add-reference-btn,
+div.reference-item span.glyphicon-remove {
+  color: #08c;
+  cursor: pointer;
+  margin-top: 10px;
+}
 div.form-group div.reference-item {
   margin-top: 15px !important;
   height: 30px;

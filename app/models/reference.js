@@ -21,7 +21,7 @@ module.exports = {
       //console.log(values);
       values = values.substr(0, (values.length - 1));
       query = query + values;
-      console.log(query);
+      //console.log(query);
       utils.exec(query, null, cb);
     }
   },
