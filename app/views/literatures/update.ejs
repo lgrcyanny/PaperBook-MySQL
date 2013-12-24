@@ -114,11 +114,11 @@
                   <div class="progress-bar progress-bar-success"></div>
               </div>
               <div id="uploaded-literature">
-                <% if (literature.filename) { %>
+                <% if (literature.file.name) { %>
                  <p>
-                   <%=literature.filename ? literature.filename : ''%>
-                   <span data-path="<%=literature.file_path ? literature.file_path : ''%>" class="remove-file glyphicon glyphicon-remove"></span>
-                   <input type="hidden" name="file_path" value="<%=literature.file_path ? literature.file_path : '' %>" />
+                   <%=literature.file.name + ' (' + literature.file.size + ')' %>
+                   <span data-path="<%=literature.file.path %>" class="remove-file glyphicon glyphicon-remove"></span>
+                   <input type="hidden" name="file" value="<%=escape(JSON.stringify(literature.file)) %>" />
                  </p>
                 <% } %>
               </div>
@@ -141,16 +141,14 @@
                   <div class="progress-bar progress-bar-success"></div>
               </div>
               <div id="uploaded-accessories">
-                <% if (literature.accessories) { %>
-                  <% for (var q = 0; q < literature.accessories.length; q++) { %>
-                   <%    var accessory = literature.accessories[q]; %>
-                   <p>
-                     <%=accessory.name ? accessory.name : ''%>
-                     <span data-path="<%=accessory.path ? accessory.path : ''%>" class="remove-file glyphicon glyphicon-remove"></span>
-                     <input type="hidden" name="accessories[]" value="<%=accessory.path ? accessory.path : ''%>" />
-                   </p>
-                  <%  } %>
-                <% } %>
+                <% for (var q = 0; q < literature.accessories.length; q++) { %>
+                 <%  var accessory = literature.accessories[q]; %>
+                 <p>
+                   <%=accessory.name + ' (' + accessory.size + ')'  %>
+                   <span data-path="<%=accessory.path %>" class="remove-file glyphicon glyphicon-remove"></span>
+                   <input type="hidden" name="accessories[]" value="<%=escape(JSON.stringify(accessory)) %>" />
+                 </p>
+                <%  } %>
               </div>
             </div>
           </div>

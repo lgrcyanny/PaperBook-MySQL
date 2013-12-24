@@ -102,7 +102,7 @@ exports.create = function (req, res, next) {
           if (err) {
             return next(err);
           }
-
+          console.log('Save references ' + saveRes);
           res.send({
             success: true,
             literatureId: result.insertId
@@ -162,14 +162,22 @@ exports.update = function (req, res, next) {
 
 exports.showDetailPage = function (req, res) {
   var literature = req.literature;
-  res.render('literatures/detail', {
-    title: literature.title,
-    literature: literature
+  referenceModel.findByCited(literature.id, function (err, citedResults) {
+    if (err) {
+      throw err;
+    }
+    res.render('literatures/detail', {
+      title: literature.title,
+      literature: literature,
+      referencesType: globalConfig.referencesType,
+      cited: citedResults
+    });
   });
 }
 
 exports.uploadFileLiterature = function (req, res) {
   var file = req.files.literature;
+  //console.log(file);
   uploadFile(file, 'literatures', req.user.username, res);
 }
 
@@ -236,21 +244,6 @@ exports.fetchCited = function (req, res) {
   })
 }
 
-exports.removeCited = function (req, res) {
-  var id = req.body.referenceId;
-  referenceModel.deleteByReference(id, function (err, results) {
-    if (err) {
-      res.send({
-        success: false,
-        error: err
-      })
-    }
-    res.send({
-      success: true,
-      results: results
-    })
-  })
-}
 
 /**
  * Private Functions
@@ -265,6 +258,9 @@ exports.removeCited = function (req, res) {
 var uploadFile = function (file, type, username, res) {
   var filename = file.originalFilename;
   var filepath = file.path;
+  var filetype = file.type.split('/');
+  var filesize = getFileSize(file.size);
+
   var year = moment().format('YYYY');
   var month = moment().format('MM');
   var date = moment().format('DD');
@@ -285,6 +281,9 @@ var uploadFile = function (file, type, username, res) {
         success: true,
         file: {
           name: filename,
+          type: filetype[0],
+          size: filesize,
+          extension: filetype[1],
           path: serverpath
         }
       });
@@ -292,43 +291,27 @@ var uploadFile = function (file, type, username, res) {
   });
 }
 
-var wrapLiteratureForDBSave = function (userid, literature) {
-  if (literature.accessories) {
-    literature.accessories = literature.accessories.join(',');
-  }
-
-  if (!literature.file_path) {
-    literature.file_path = null;
-  }
-
-  if (literature.references) {
-    literature.references = JSON.stringify(literature.references);
+var getFileSize = function (size) {
+  var res = '';
+  if (size > 1000000) {
+    size = Math.round(size / 1000000);
+    res = size + 'MB';
   } else {
-    literature.references = JSON.stringify([]);
+    size = Math.round(size / 1000);
+    res = size + 'KB';
   }
+  return res;
+}
 
+var wrapLiteratureForDBSave = function (userid, literature) {
   literature.user_id = userid;
   return literature;
 }
 
 var wrapLiteratureForShow = function (literature) {
-  if (literature.file_path) {
-    literature.filename = path.basename(literature.file_path);
-  }
-
-  if (literature.accessories) {
-    var accessories = literature.accessories.split(',');
-    literature.accessories = [];
-    for (var i = 0; i <  accessories.length; i++) {
-      var item = accessories[i];
-      var obj = {
-        name: path.basename(item),
-        path: item
-      }
-      literature.accessories.push(obj);
-    }
-  }
-
+  literature.file = JSON.parse(literature.file);
+  literature.accessories = JSON.parse(literature.accessories);
   literature.references = JSON.parse(literature.references);
   return literature;
 }
+

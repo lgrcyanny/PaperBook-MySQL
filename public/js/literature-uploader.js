@@ -42,7 +42,19 @@ $(function () {
             });
           }
         });
-        data['references'] = references;
+        data['references'] = JSON.stringify(references);
+      }
+
+      if (data.hasOwnProperty('file')) {
+        delete data['file'];
+        var fileinfo = $('div#upload-info div.tab-pane.active #uploaded-literature input').val();
+        // Since File Info is escaped by fileUploader.js, so must call unescape
+        fileinfo = unescape(fileinfo);
+        if (fileinfo) {
+          data['file'] = fileinfo;
+        } else {
+          data['file'] = JSON.stringify([]);
+        }
       }
 
       // accessories file_path is special, handle it specially
@@ -50,9 +62,9 @@ $(function () {
         delete data['accessories[]'];
         var accessories = [];
         $('div#upload-info div.tab-pane.active input[name="accessories[]"]').each(function () {
-          accessories.push($(this).val());
+          accessories.push(JSON.parse(unescape($(this).val())));
         })
-        data['accessories'] = accessories;
+        data['accessories'] = JSON.stringify(accessories);
       }
       return data;
     },

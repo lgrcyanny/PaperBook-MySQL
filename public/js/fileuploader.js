@@ -16,12 +16,12 @@ var fileUploader = {
         dataType: 'json',
         done: function (e, data) {
             var file = data.result.file;
-            var html = fileUploader.generateUploadedFilesHtml(file, 'file_path');
+            var html = fileUploader.generateUploadedFilesHtml(file, 'file');
             $('div.tab-pane #uploaded-literature').empty().append(html);
             fileUploader.addRemoveActionListener('div.tab-pane #uploaded-literature .remove-file');
             setTimeout(function () {
                 $('div.tab-pane #upload-progress-literature').css('display', 'none');
-            }, 3000);
+            }, 2000);
         },
         progressall: function (e, data) {
             var progress = parseInt(data.loaded / data.total * 100, 10);
@@ -45,7 +45,7 @@ var fileUploader = {
             fileUploader.addRemoveActionListener('div.tab-pane #uploaded-accessories .remove-file');
             setTimeout(function () {
                 $('div.tab-pane #upload-progress-accessory').css('display', 'none');
-            }, 3000);
+            }, 2000);
         },
         progressall: function (e, data) {
             var progress = parseInt(data.loaded / data.total * 100, 10);
@@ -79,9 +79,9 @@ var fileUploader = {
 
   generateUploadedFilesHtml: function (file, inputname) {
     var html = '<p>' +
-                file.name +
+                file.name + ' (' + file.size + ')' +
                 '<span data-path="' + file.path + '" class="remove-file glyphicon glyphicon-remove"></span>'  +
-                '<input type="hidden" name="' + inputname + '" value="' + file.path +'" />' +
+                '<input type="hidden" name="' + inputname + '" value="' + escape(JSON.stringify(file)) +'" />' +
                 '</p>';
     return html;
   }

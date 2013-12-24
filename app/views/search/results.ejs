@@ -10,7 +10,7 @@
         <li>
           <h4><a href="/literatures/detail/<%=results[i].id %>"><%= results[i].title %></a></h4>
           <p>
-            <%= results[i].abstract %>
+            <%= results[i].abstract.length > 800 ? results[i].abstract.substr(0, 800) + '...' : results[i].abstract %>
           </p>
         </li>
         <% } %>
