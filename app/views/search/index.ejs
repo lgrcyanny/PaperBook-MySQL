@@ -1,6 +1,8 @@
 <% layout('../layouts/default.ejs')  -%>
 <div class="search-box row">
-  <img src="/img/Logo.png" class="col-md-11">
+  <div id="logo">
+    <img src="/img/logo.jpg" class="col-md-9 col-md-offset-1">
+  </div>
     <form class="form-horizontal" role="form" method="get" action="/search/results">
       <input type="text" name="query" class="form-control" placeholder="Search Literature">
       <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-search"></span></button>
