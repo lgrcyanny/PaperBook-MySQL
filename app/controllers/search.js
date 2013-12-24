@@ -48,7 +48,17 @@ exports.showSearchResults = function (req, res) {
 }
 
 exports.showComplexSearchResults = function (res, req) {
-  Literature.findAll('a b c', 'd', 'e f', function (err, results) {
+  var condition = {
+    allWords: 'per',
+    exactPhrase: 'cloud',
+    oneWords: 'of',
+    withoutWords: 'ggg hhhh',
+    authors: 'Iosup A',
+    publications: 't2 t3',
+    lYear: 2000,
+    rYear: 2012
+  };
+  Literature.findAll(condition, function (err, results) {
     results.forEach(function (result, index) {
       console.log(result.title);
     });

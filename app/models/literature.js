@@ -69,26 +69,59 @@ module.exports = {
     });
   },
 
-  findAll: function (allWords, exactPhrase, oneWords, callback) {
-    var allWords = allWords.split(' '),
-      exactPhrase = exactPhrase,
-      oneWords = oneWords.split(' ');
+  findAll: function (condition, callback) {
+    var allWords = condition.allWords.split(' '),
+      exactPhrase = condition.exactPhrase,
+      oneWords = condition.oneWords.split(' '),
+      withoutWords = condition.withoutWords.split(' '),
+      authors = condition.authors.split(' '),
+      publications = condition.publications.split(' '),
+      lYear = condition.lYear,
+      rYear = condition.rYear;
+
     console.log('allWords:', allWords);
     console.log('exactPhrase:', exactPhrase);
     console.log('oneWords:', oneWords);
+    console.log('withoutWords:', withoutWords);
+    console.log('authors:', authors);
+    console.log('publications:', publications);
+    console.log('year:' + lYear + '-' + rYear);
+
+    //search expressions
     var allWordsExpr = squel.expr(),
       oneWordsExpr = squel.expr(),
+      withoutWordsExpr = squel.expr(),
+      authorsExpr = squel.expr(),
+      publicationsExpr = squel.expr(),
+      yearExpr = squel.expr(),
       query = squel.select()
         .from('literatures');
+
     allWords.forEach(function (word, index) {
       allWordsExpr = allWordsExpr.and("title like '%" + word + "%'");
     });
     oneWords.forEach(function (word, index) {
       oneWordsExpr = oneWordsExpr.or("title like '%" + word + "%'");
     });
+    withoutWords.forEach(function (word, index) {
+      withoutWordsExpr = withoutWordsExpr.and("title not like '%" + word + "%'");
+    });
+    authors.forEach(function (word, index) {
+      authorsExpr = authorsExpr.or("authors like '%" + word + "%'");
+    });
+    publications.forEach(function (word, index) {
+      publicationsExpr = publicationsExpr.or("publication like '%" + word + "%'");
+    });
+    yearExpr = yearExpr.and("year >=" + lYear)
+      .and("year <=" + rYear);
+
     query = query.where(allWordsExpr)
       .where("title like '%" + exactPhrase + "%'")
-      .where(oneWordsExpr);
+      .where(oneWordsExpr)
+      .where(withoutWordsExpr)
+      .where(authorsExpr)
+      .where(publicationsExpr)
+      .where(yearExpr);
     console.log(query.toString());
 
     utils.exec(query.toString(), null, function (err, results) {
