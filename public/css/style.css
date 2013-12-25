@@ -89,7 +89,17 @@ div#literature-detail-tab div.tab-pane#references li {
   padding-top: 10px;
   padding-bottom: 10px;
 }
+/**
+ * upload.ejs and update.ejs
+ */
 div.form-group div.reference-item {
   margin-top: 15px !important;
   height: 30px;
+}
+/**
+ * admin/config.ejs
+ */
+div#admin-config span.glyphicon {
+  color: #08c;
+  cursor: pointer;
 }

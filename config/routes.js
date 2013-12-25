@@ -13,6 +13,7 @@ var search = require('../app/controllers/search');
 var admin = require('../app/controllers/admin');
 var auth = require('./middlewares/authorization');
 var literatures = require('../app/controllers/literatures');
+literatures.loadGlobalConfig();
 
 
 /**
@@ -67,5 +68,7 @@ module.exports = function (app, passport) {
   app.param('literatureId', literatures.fetchById);
 
   // Admin Route
-  app.get('/admin', admin.showPage);
+  app.get('/admin', admin.showAdminPage);
+  app.post('/admin/config', admin.saveConfig);
+  app.post('/admin/users/remove', admin.removeUser);
 }

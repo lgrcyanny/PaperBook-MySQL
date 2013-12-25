@@ -52,9 +52,9 @@ $(function () {
         fileinfo = unescape(fileinfo);
         if (fileinfo) {
           data['file'] = fileinfo;
-        } else {
-          data['file'] = JSON.stringify([]);
         }
+      } else {
+        data['file'] = JSON.stringify({});
       }
 
       // accessories file_path is special, handle it specially
@@ -65,6 +65,8 @@ $(function () {
           accessories.push(JSON.parse(unescape($(this).val())));
         })
         data['accessories'] = JSON.stringify(accessories);
+      } else {
+        data['accessories'] = JSON.stringify([]);
       }
       return data;
     },
@@ -80,7 +82,7 @@ $(function () {
         },
         success: function (res) {
           if (res.success) {
-            console.log(res);
+            //console.log(res);
             window.location.href = self.rootUrl + '/myliterature'
           }
         }

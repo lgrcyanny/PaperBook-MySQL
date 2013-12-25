@@ -1,373 +1,164 @@
 <% layout('../layouts/default.ejs')  -%>
+<% script('/js/admin-config.js') -%>
 
 <ul class="nav nav-tabs">
-  <li class="active"><a href="#literatureConfig" data-toggle="tab">Literature</a></li>
-  <li><a href="#commentConfig" data-toggle="tab">Comment</a></li>
-  <li><a href="#RRConfig" data-toggle="tab">Reference Relationship</a></li>
-  <li><a href="#userListConfig" data-toggle="tab">User List</a></li>
+  <li class="active"><a href="#literature-config" data-toggle="tab">Literature</a></li>
+  <li><a href="#rich-comment-config" data-toggle="tab">Comment</a></li>
+  <li><a href="#ref-config" data-toggle="tab">Reference Relationship</a></li>
+  <li><a href="#user-config" data-toggle="tab">User List</a></li>
 </ul>
 
 <!-- Tab panes -->
-<div class="tab-content well">
-  <div class="tab-pane fade in active" id="literatureConfig">
+<div class="tab-content well" id="admin-config">
+  <div class="tab-pane fade in active" id="literature-config">
     <table class="table table-striped">
       <thead>
         <tr>
-          <th class="col-md-1">Category</th>
-          <th class="col-md-10">Config Choice</th>
+          <th class="col-md-2">Category</th>
+          <th class="col-md-9">Config Choice</th>
           <th class="col-md-1">Option</th>
         </tr>
       </thead>
       <tbody>
+        <% for (var i = 0; i < literatureTypes.length; i++) { %>
+        <% var typeItem = literatureTypes[i]; %>
         <tr>
-          <td>Book</td>
           <td>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="pages" value="">pages
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="url" value="">url
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="publisher" value="">publisher
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="editor" value="">editor
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="book_name" value="">book
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="isbn" value="">isbn
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="publication" value="">publication
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="volume" value="">volume
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="issue" value="">issue
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="city" value="">city
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="doi" value="">doi
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="college" value="">college
-              </label>
-            </div>
+            <input type="text" class="col-md-10" name="literature-type-name" value="<%=typeItem.name %>">
           </td>
           <td>
-            <a><span class="glyphicon glyphicon-remove"></span></a>
+            <% for (var j = 0; j < literatureConfigInfo.length; j++) { %>
+            <% var infoItem = literatureConfigInfo[j]; %>
+              <div class="checkbox-inline">
+                <label>
+                  <input type="checkbox" name="<%=infoItem %>" value="<%=infoItem %>" <%=typeItem.info.indexOf(infoItem) >= 0 ? 'checked' : '' %> ><%=infoItem %>
+                </label>
+              </div>
+            <% } %>
+          </td>
+          <td>
+            <span class="glyphicon glyphicon-remove remove-btn"></span>
           </td>
         </tr>
-
-        <tr>
-          <td>Journal</td>
-          <td>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="pages" value="">pages
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="url" value="">url
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="publisher" value="">publisher
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="editor" value="">editor
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="book_name" value="">book
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="isbn" value="">isbn
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="publication" value="">publication
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="volume" value="">volume
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="issue" value="">issue
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="city" value="">city
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="doi" value="">doi
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="college" value="">college
-              </label>
-            </div>
-          </td>
-          <td>
-            <a><span class="glyphicon glyphicon-remove"></span></a>
-          </td>
-        </tr>
-
+        <% } %>
         <tr>
           <td>
-            <input type="text" class="col-md-12">
+            <input type="text" class="col-md-10" name="literature-type-name" >
           </td>
           <td>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="pages" value="">pages
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="url" value="">url
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="publisher" value="">publisher
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="editor" value="">editor
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="book_name" value="">book
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="isbn" value="">isbn
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="publication" value="">publication
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="volume" value="">volume
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="issue" value="">issue
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="city" value="">city
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="doi" value="">doi
-              </label>
-            </div>
-            <div class="checkbox-inline">
-              <label>
-                <input type="checkbox" name="college" value="">college
-              </label>
-            </div>
+            <% for (var j = 0; j < literatureConfigInfo.length; j++) { %>
+            <% var infoItem = literatureConfigInfo[j]; %>
+              <div class="checkbox-inline">
+                <label>
+                  <input type="checkbox" name="<%=infoItem %>" value="<%=infoItem %>"><%=infoItem %>
+                </label>
+              </div>
+            <% } %>
           </td>
           <td>
-            <a><span class="glyphicon glyphicon-plus"></span></a>
+            <span class="glyphicon glyphicon-plus add-btn"></span>
           </td>
         </tr>
       </tbody>
     </table>
-      
-    <button class="btn btn-success">Save Changes</button>
-    <button class="btn btn-default">Cancel</button>
+
+    <button class="btn btn-success save-btn" id="literature-config-save-btn">Save Changes</button>
+    <button class="btn btn-default cancel-btn" id="literature-config-cancle-btn">Cancel</button>
   </div>
 
-  <div class="tab-pane fade" id="commentConfig">
+  <div class="tab-pane fade" id="rich-comment-config">
     <table class="table table-striped">
       <thead>
         <tr>
-          <th class="col-md-11">Category</th>
-          <th class="col-md-1">Option</th>
+          <th class="col-md-10">Category</th>
+          <th class="col-md-2">Option</th>
         </tr>
       </thead>
       <tbody>
+        <% for (var i = 0; i < richComment.length; i++) { %>
         <tr>
           <td>
-            Problem
+            <input type="text" class="col-md-2" name="rich-comment" value="<%=richComment[i] %>" />
           </td>
           <td>
-            <a><span class="glyphicon glyphicon-remove"></span></a>
+            <span class="glyphicon glyphicon-remove remove-btn"></span>
           </td>
         </tr>
+        <% } %>
         <tr>
           <td>
-            Idea
+            <input type="text" class="col-md-2"  name="rich-comment">
           </td>
           <td>
-            <a><span class="glyphicon glyphicon-remove"></span></a>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            Experiment
-          </td>
-          <td>
-            <a><span class="glyphicon glyphicon-remove"></span></a>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <input type="text">
-          </td>
-          <td>
-            <a><span class="glyphicon glyphicon-plus"></span></a>
+            <span class="glyphicon glyphicon-plus add-btn"></span>
           </td>
         </tr>
       </tbody>
     </table>
-    <button class="btn btn-success">Save Changes</button>
-    <button class="btn btn-default">Cancel</button>
+    <button class="btn btn-success save-btn" id="rich-comment-config-save-btn">Save Changes</button>
+    <button class="btn btn-default cancel-btn" id="rich-comment-config-cancel-btn">Cancel</button>
   </div>
-  <div class="tab-pane fade" id="RRConfig">
+
+
+  <div class="tab-pane fade" id="ref-config">
     <table class="table table-striped">
       <thead>
         <tr>
-          <th class="col-md-11">Category</th>
-          <th class="col-md-1">Option</th>
+          <th class="col-md-10">Category</th>
+          <th class="col-md-2">Option</th>
         </tr>
       </thead>
       <tbody>
+        <% for (var i = 0; i <  referenceType.length; i++) { %>
         <tr>
           <td>
-            Mention
+            <input type="text" class="col-md-2" name="reference-type" value="<%=referenceType[i] %>" />
           </td>
           <td>
-            <a><span class="glyphicon glyphicon-remove"></span></a>
+            <span class="glyphicon glyphicon-remove remove-btn"></span>
           </td>
         </tr>
+        <% } %>
         <tr>
           <td>
-            Idea
+            <input type="text" class="col-md-2"  name="reference-type">
           </td>
           <td>
-            <a><span class="glyphicon glyphicon-remove"></span></a>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            Related
-          </td>
-          <td>
-            <a><span class="glyphicon glyphicon-remove"></span></a>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <input type="text">
-          </td>
-          <td>
-            <a><span class="glyphicon glyphicon-plus"></span></a>
+            <span class="glyphicon glyphicon-plus add-btn"></span>
           </td>
         </tr>
       </tbody>
     </table>
-    <button class="btn btn-success">Save Changes</button>
-    <button class="btn btn-default">Cancel</button>
+    <button class="btn btn-success save-btn" id="ref-config-save-btn">Save Changes</button>
+    <button class="btn btn-default cancel-btn" id="ref-config-cancel-btn">Cancel</button>
   </div>
-  <div class="tab-pane fade" id="userListConfig">
+
+
+  <div class="tab-pane fade" id="user-config">
     <table class="table table-striped">
       <thead>
         <tr>
-          <th class="col-md-11">User</th>
+          <th class="col-md-2">id</th>
+          <th class="col-md-2">username</th>
+          <th class="col-md-2">Email</th>
+          <th class="col-md-2">Fullname</th>
+          <th class="col-md-3">Sign up at</th>
           <th class="col-md-1">Option</th>
         </tr>
       </thead>
       <tbody>
+        <% for (var i = 0; i < users.length; i++) {%>
+        <% var user = users[i]; %>
         <tr>
-          <td>
-            Cyanny LIANG
-          </td>
-          <td>
-            <a><span class="glyphicon glyphicon-remove"></span></a>
-          </td>
+          <td><%=user.id %></td>
+          <td><%=user.username %></td>
+          <td><%=user.email %></td>
+          <td><%=user.fullname ? user.fullname : 'NA' %></td>
+          <td><%=moment(user.sign_up_at).format('YYYY-MM-DD HH:mm:ss') %></td>
+          <td><span class="glyphicon glyphicon-remove remove-btn user-remove-btn"></span></td>
         </tr>
-        <tr>
-          <td>
-            Idea
-          </td>
-          <td>
-            <a><span class="glyphicon glyphicon-remove"></span></a>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            Thomas ZHANG
-          </td>
-          <td>
-            <a><span class="glyphicon glyphicon-remove"></span></a>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            Arron FENG
-          </td>
-          <td>
-            <a><span class="glyphicon glyphicon-remove"></span></a>
-          </td>
-        </tr>
+        <% } %>
       </tbody>
     </table>
   </div>
-</div>  
+</div>

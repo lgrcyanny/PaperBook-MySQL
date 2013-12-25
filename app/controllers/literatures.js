@@ -3,6 +3,7 @@
  */
 var literatureModel = require('../models/literature');
 var referenceModel = require('../models/reference');
+var configModel = require('../models/global-config');
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 var path = require('path');
@@ -10,35 +11,21 @@ var moment = require('moment');
 var env = process.env.NODE_ENV || 'development';
 var config = require('../../config/config')[env];
 var globalConfig = {
-  categories: [{
-    name: 'Book',
-    info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'publisher', 'edition', 'editors', 'isbn']
-  },
-  {
-    name: 'BookSection',
-    info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'book_name','publisher', 'edition', 'editors', 'isbn']
-  },
-  {
-    name: 'Journal',
-    info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'publication', 'volume', 'issue', 'doi']
-  },
-  {
-    name: 'Conference',
-    info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'publication', 'city', 'doi']
-  },
-  {
-    name: 'Thesis',
-    info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'college']
-  },
-  {
-    name: 'Online',
-    info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references']
-  },
-  {
-    name: 'Report',
-    info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references']
-  }],
-  referencesType: ['Mention', 'Related', 'Use', 'Compare', 'Unknown']
+  categories: [],
+  referenceType: [],
+  richComment: []
+}
+
+exports.loadGlobalConfig = function () {
+  configModel.findByTypes('*', function (err, results) {
+    if (err) {
+      return next(err);
+    }
+    var config = results[0];
+    globalConfig.categories = JSON.parse(config.literature_type);
+    globalConfig.referenceType = JSON.parse(config.reference_type);
+    globalConfig.richComment = JSON.parse(config.rich_comment);
+  });
 }
 
 exports.fetchById = function (req, res, next, id) {
@@ -77,7 +64,7 @@ exports.showUploadPage = function (req, res) {
     returnUrl: '',
     requestUrl: '/literatures',
     categories: globalConfig.categories,
-    referencesType: globalConfig.referencesType
+    referenceType: globalConfig.referenceType
   });
 }
 
@@ -102,7 +89,7 @@ exports.create = function (req, res, next) {
           if (err) {
             return next(err);
           }
-          console.log('Save references ' + saveRes);
+          //console.log('Save references ' + saveRes);
           res.send({
             success: true,
             literatureId: result.insertId
@@ -122,7 +109,7 @@ exports.showUpdatePage = function (req, res, next) {
     returnUrl: '/myliterature',
     requestUrl: '/literatures/update/' + literature.id,
     categories: globalConfig.categories,
-    referencesType: globalConfig.referencesType
+    referenceType: globalConfig.referenceType
   });
 }
 
@@ -134,7 +121,7 @@ exports.update = function (req, res, next) {
       return next(err);
     }
     if (result) {
-      console.log(result);
+      //console.log(result);
       referenceModel.deleteByReference(id, function (err) {
         if (err) {
           return next(err);
@@ -149,7 +136,7 @@ exports.update = function (req, res, next) {
               if (err) {
                 return next(err);
               }
-              console.log(refSaveRes);
+              //console.log(refSaveRes);
               res.send({
                 success: true
               });
@@ -169,7 +156,7 @@ exports.showDetailPage = function (req, res) {
     res.render('literatures/detail', {
       title: literature.title,
       literature: literature,
-      referencesType: globalConfig.referencesType,
+      referenceType: globalConfig.referenceType,
       cited: citedResults
     });
   });
@@ -314,4 +301,6 @@ var wrapLiteratureForShow = function (literature) {
   literature.references = JSON.parse(literature.references);
   return literature;
 }
+
+
 

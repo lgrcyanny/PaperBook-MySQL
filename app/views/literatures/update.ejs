@@ -59,9 +59,9 @@
                   <label for="reference-type" class="col-md-1 control-label">Type</label>
                   <div class="col-md-2">
                     <select  name="reference-type" class="form-control">
-                      <% for (var k = 0; k < referencesType.length; k++) { %>
-                        <option <%= referencesType[k] === refitem.type ? 'selected' : 0%> >
-                          <%=referencesType[k] %>
+                      <% for (var k = 0; k < referenceType.length; k++) { %>
+                        <option <%= referenceType[k] === refitem.type ? 'selected' : 0%> >
+                          <%=referenceType[k] %>
                         </option>
                       <% } %>
                     </select>
@@ -84,8 +84,8 @@
                   <label for="reference-type" class="col-md-1 control-label">Type</label>
                   <div class="col-md-2">
                     <select  name="reference-type" class="form-control">
-                      <% for (var k = 0; k < referencesType.length; k++) { %>
-                        <option><%=referencesType[k] %></option>
+                      <% for (var k = 0; k < referenceType.length; k++) { %>
+                        <option><%=referenceType[k] %></option>
                       <% } %>
                     </select>
                   </div>
@@ -114,7 +114,7 @@
                   <div class="progress-bar progress-bar-success"></div>
               </div>
               <div id="uploaded-literature">
-                <% if (literature.file) { %>
+                <% if (literature.file && literature.file.name) { %>
                  <p>
                    <%=literature.file.name + ' (' + literature.file.size + ')' %>
                    <span data-path="<%=literature.file.path %>" class="remove-file glyphicon glyphicon-remove"></span>
@@ -141,7 +141,7 @@
                   <div class="progress-bar progress-bar-success"></div>
               </div>
               <div id="uploaded-accessories">
-                <% if (literature.accessories) { %>
+                <% if (literature.accessories && literature.accessories.length) { %>
                 <% for (var q = 0; q < literature.accessories.length; q++) { %>
                  <%  var accessory = literature.accessories[q]; %>
                  <p>
