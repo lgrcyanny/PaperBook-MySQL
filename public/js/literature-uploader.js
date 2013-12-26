@@ -43,6 +43,8 @@ $(function () {
           }
         });
         data['references'] = JSON.stringify(references);
+      } else {
+        data['references'] = JSON.stringify([]);
       }
 
       if (data.hasOwnProperty('file')) {

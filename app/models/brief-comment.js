@@ -9,9 +9,9 @@ module.exports = {
     utils.exec(query, data, cb);
   },
 
-  findByUser: function (useId, cb) {
-    var query = 'SELECT a.content as content, a.id as id FROM ?? WHERE a.literature_id = ? AND a.publicshed = ?';
-    var data = [this.table, userId, 0];
+  findByUser: function (literatureId, useId, cb) {
+    var query = 'SELECT a.id as id, a.content as content FROM ?? AS a WHERE a.literature_id = ? AND a.publicshed = ? AND a.user_id = ?';
+    var data = [this.table, literatureId, userId, 0];
     utils.exec(query, data, cb);
   },
 

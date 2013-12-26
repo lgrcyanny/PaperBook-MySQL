@@ -68,7 +68,7 @@ exports.create = function (req, res, next) {
     //console.log(req.body.literature.references);
     if (result) {
       // Since object param is parsed by reference, so references is stringified now.
-      var references = JSON.parse(req.body.literature.references);
+      var references = JSON.parse(literature.references);
       if (references.length === 0) {
         res.send({
           success: true,
