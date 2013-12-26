@@ -13,6 +13,7 @@ var search = require('../app/controllers/search');
 var admin = require('../app/controllers/admin');
 var auth = require('./middlewares/authorization');
 var literatures = require('../app/controllers/literatures');
+var richComments = require('../app/controllers/rich-comments');
 
 
 /**
@@ -72,4 +73,10 @@ module.exports = function (app, passport) {
   app.get('/admin', admin.showAdminPage);
   app.post('/admin/config', admin.saveConfig);
   app.post('/admin/users/remove', admin.removeUser);
+
+  // Rich comment route
+  app.get('/literatures/detail/comments/rich/draft', richComments.fetchDraft);
+  app.get('/literatures/detail/comments/rich', richComments.fetchComments);
+  app.post('/literatures/detail/comments/rich/draft', richComments.saveDraft);
+  app.post('/literatures/detail/comments/rich', richComments.publish);
 }

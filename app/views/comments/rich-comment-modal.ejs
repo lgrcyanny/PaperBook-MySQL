@@ -1,0 +1,32 @@
+<!--Needs two parameters: richCommentType and comment-->
+<div class="modal fade" id="rich-comment-modal" tabindex="-1" role="dialog" aria-labelledby="rich-comment-modal-label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="rich-comment-modal-label">Make Detail Comment</h4>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="rich-comment-draft-id" value="<%= comment ? comment.id : '' %>" />
+        <form role="form">
+          <div class="form-group">
+            <label for="Title" class="col-md-1 control-label">Title</label>
+            <input type="text" class="form-control" id="Title" placeholder="Title" value="<%=comment ? (comment.content.Title ? comment.content.Title : '') : '' %>">
+          </div>
+          <% for (var i = 0; i < richCommentType.length; i++) { %>
+          <% var typeItem = richCommentType[i]; %>
+          <div class="form-group">
+            <label for="<%=typeItem %>" class="col-md-1 control-label"><%=typeItem %></label>
+            <textarea class="form-control"  rows="2" name="<%=typeItem %>" placeholder="<%=typeItem %>"><%= comment ? (comment.content[typeItem] ? comment.content[typeItem].trim() : '') : '' %></textarea>
+          </div>
+          <% } %>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" id="rich-comment-save-draft-btn" class="btn btn-default">Save Draft</button>
+        <button type="button" id="rich-comment-publish-btn" class="btn btn-success">Publish</button>
+      </div>
+    </div>
+  </div>
+</div>

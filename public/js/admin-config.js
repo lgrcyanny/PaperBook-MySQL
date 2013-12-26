@@ -31,7 +31,7 @@ $(function () {
     },
 
     showAlert: function (type, error) {
-      var html = new EJS({url: '/admin/' + type + '.ejs'}).render(error);
+      var html = new EJS({url: '/alerts/' + type + '.ejs'}).render(error);
       $('#admin-config div.tab-pane.active table').after(html);
     },
 
