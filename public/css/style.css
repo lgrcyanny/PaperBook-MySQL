@@ -12,7 +12,7 @@ small {
   min-height: 650px;
 }
 .search-box {
-  margin-top: 250px;
+  margin-top: 150px;
   width: 700px;
   margin-left: auto;
   margin-right: auto;
@@ -21,13 +21,18 @@ small {
   width: 100%;
 }
 .search-box form input {
-  width: 580px;
+  width: 600px;
   float: left;
 }
-.search-box form button {
-  width: 72px;
+.search-box form .btn-group {
   float: left;
   margin-left: 10px;
+}
+.search-box form .btn-group button {
+  width: 40px;
+}
+.search-box div#logo {
+  margin-bottom: 150px;
 }
 #signin-section,
 #signup-section {
@@ -92,4 +97,12 @@ div#literature-detail-tab div.tab-pane#references li {
 div.form-group div.reference-item {
   margin-top: 15px !important;
   height: 30px;
+}
+.ad-search-list dt {
+  width: 200px;
+  margin: 5px;
+}
+.ad-search-list dd input {
+  margin: 5px;
+  width: 300px;
 }
