@@ -1,6 +1,7 @@
 <% layout('../layouts/default') -%>
 <% script('/js/literature-detail.js') -%>
 <% script('/js/literature-comment.js') -%>
+<% script('/js/temp.js') -%>
 
 <div class="row">
   <div class="col-md-8">
@@ -151,25 +152,25 @@
 
   <div id="brief-comments" class="col-md-4">
     <h3>Brief Conments</h3>
-    <ul class="list-unstyled">
-      <li>
+    <ul class="list-unstyled" id="brief-list">
+      <li class="">
         <a href="#" class="">
           Cyanny LIANG
         </a>
         <p class="">It's really good about cloud computing!</p>
       </li>
-      <li>
+      <li class="">
         <a href="#" class="">
           Arron FENG
         </a>
         <p class="">It's really Bad paper! Dont know what it is sayins.</p>
       </li>
-      <li>
+      <li class="">
         <a href="#" class="">
           Thomas ZHANG
         </a>
         <p class="">It's just OK. There's some other paper explains things better.</p>
-      </li>
+      </li class="">
       <li>
         <a href="#" class="">
           Smone Else
@@ -177,11 +178,11 @@
         <p class="">lalala, love this paper lalala~</p>
       </li>
     </ul>
-    <div id="brief-comments-input">
-      <textarea class="form-control" rows="3" placeholder="Add your brief comment here..."></textarea>
+    <div>
+      <textarea class="form-control" rows="3" id="brief-comment-area" placeholder="Add your brief comment here..."></textarea>
       <div class="pull-right">
         <a href="#" class="btn">Save Draft</a>
-        <button type="button" class="btn btn-success">Submit</button>
+        <button type="button" class="btn btn-success" id="brief-submit" onclick="displayDate()">Submit</button>
       </div>
     </div>
   </div>
@@ -254,5 +255,4 @@
       </div>
     </div>
   </div>
-  
 </div>
