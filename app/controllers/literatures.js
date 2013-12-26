@@ -10,23 +10,7 @@ var path = require('path');
 var moment = require('moment');
 var env = process.env.NODE_ENV || 'development';
 var config = require('../../config/config')[env];
-var globalConfig = {
-  categories: [],
-  referenceType: [],
-  richComment: []
-}
 
-exports.loadGlobalConfig = function () {
-  configModel.findByTypes('*', function (err, results) {
-    if (err) {
-      return next(err);
-    }
-    var config = results[0];
-    globalConfig.categories = JSON.parse(config.literature_type);
-    globalConfig.referenceType = JSON.parse(config.reference_type);
-    globalConfig.richComment = JSON.parse(config.rich_comment);
-  });
-}
 
 exports.fetchById = function (req, res, next, id) {
   var literature = literatureModel.findById(id, function (err, results) {
@@ -59,12 +43,18 @@ exports.fetchByTitle = function (req, res, next) {
 }
 
 exports.showUploadPage = function (req, res) {
-  res.render('literatures/upload', {
-    title: 'Upload literature',
-    returnUrl: '',
-    requestUrl: '/literatures',
-    categories: globalConfig.categories,
-    referenceType: globalConfig.referenceType
+  configModel.findByTypes('*', function (err, results) {
+    if (err) {
+      return next(err);
+    }
+    var globalConfig = wrapConfigForShow(results[0]);
+    res.render('literatures/upload', {
+      title: 'Upload literature',
+      returnUrl: '',
+      requestUrl: '/literatures',
+      categories: globalConfig.literature_type,
+      referenceType: globalConfig.reference_type
+    });
   });
 }
 
@@ -102,14 +92,19 @@ exports.create = function (req, res, next) {
 
 exports.showUpdatePage = function (req, res, next) {
   var literature = req.literature;
-  //console.log(literature);
-  res.render('literatures/update', {
-    title: 'Update Literature',
-    literature: literature,
-    returnUrl: '/myliterature',
-    requestUrl: '/literatures/update/' + literature.id,
-    categories: globalConfig.categories,
-    referenceType: globalConfig.referenceType
+  configModel.findByTypes('*', function (err, results) {
+    if (err) {
+      return next(err);
+    }
+    var globalConfig = wrapConfigForShow(results[0]);
+    res.render('literatures/update', {
+      title: 'Update Literature',
+      literature: literature,
+      returnUrl: '/myliterature',
+      requestUrl: '/literatures/update/' + literature.id,
+      categories: globalConfig.literature_type,
+      referenceType: globalConfig.reference_type
+    });
   });
 }
 
@@ -149,15 +144,22 @@ exports.update = function (req, res, next) {
 
 exports.showDetailPage = function (req, res) {
   var literature = req.literature;
-  referenceModel.findByCited(literature.id, function (err, citedResults) {
+  configModel.findByTypes('*', function (err, results) {
     if (err) {
-      throw err;
+      return next(err);
     }
-    res.render('literatures/detail', {
-      title: literature.title,
-      literature: literature,
-      referenceType: globalConfig.referenceType,
-      cited: citedResults
+    var globalConfig = wrapConfigForShow(results[0]);
+    referenceModel.findByCited(literature.id, function (err, citedResults) {
+      if (err) {
+        throw err;
+      }
+      res.render('literatures/detail', {
+        title: literature.title,
+        literature: literature,
+        referenceType: globalConfig.reference_type,
+        richCommentType: globalConfig.rich_comment,
+        cited: citedResults
+      });
     });
   });
 }
@@ -302,5 +304,10 @@ var wrapLiteratureForShow = function (literature) {
   return literature;
 }
 
-
+var wrapConfigForShow = function (config) {
+  config.literature_type = JSON.parse(config.literature_type);
+  config.reference_type = JSON.parse(config.reference_type);
+  config.rich_comment = JSON.parse(config.rich_comment);
+  return config;
+}
 

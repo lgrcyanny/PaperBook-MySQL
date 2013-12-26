@@ -13,7 +13,6 @@ var search = require('../app/controllers/search');
 var admin = require('../app/controllers/admin');
 var auth = require('./middlewares/authorization');
 var literatures = require('../app/controllers/literatures');
-literatures.loadGlobalConfig();
 
 
 /**
@@ -46,7 +45,7 @@ module.exports = function (app, passport) {
   // search route
   app.get('/search/results', search.showSearchResults);
 
-  // Literature Route
+  // Literature upload route
   app.post('/literatures', literatures.create);
   app.get('/literatures/upload', auth.requiresSignin, literatures.showUploadPage);
   app.post('/literatures/upload/files/literature', literatures.uploadFileLiterature);
@@ -54,14 +53,16 @@ module.exports = function (app, passport) {
   app.post('/literatures/upload/files/remove', literatures.removeFile);
   app.get('/literatures/upload/references/query', literatures.fetchByTitle);
 
+  // Literature update route
   app.get('/literatures/update/:literatureId', literatures.showUpdatePage);
   app.post('/literatures/update/:updateId', literatures.update);
 
+  // My Literature route
   app.get('/myliterature', auth.requiresSignin, literatures.showMyLiteraturePage);
   app.post('/literatures/remove/:removeId', literatures.remove);
 
+  // Literature detail route
   app.get('/literatures/detail/cited', literatures.fetchCited);
-
   app.get('/literatures/detail/:literatureId', literatures.showDetailPage);
 
 
