@@ -16,7 +16,12 @@ module.exports = {
   findById: function (id, cb) {
     var query = 'SELECT * FROM ?? WHERE id = ?';
     var data = [this.table, id];
-    var connection = utils.getDBConnection();
+    utils.exec(query, data, cb);
+  },
+
+  findAll: function (cb) {
+    var query = 'SELECT * FROM ?? ORDER BY sign_up_at DESC';
+    var data = [this.table];
     utils.exec(query, data, cb);
   },
 
@@ -28,6 +33,11 @@ module.exports = {
     user.password = this.encryptPassword(user.password, user.salt);
     var query = 'INSERT INTO users SET ?';
     utils.exec(query, user, cb);
+  },
+
+  deleteById: function (id, cb) {
+    var query = 'DELETE FROM users WHERE id = ?';
+    utils.exec(query, [id], cb);
   },
 
   /**

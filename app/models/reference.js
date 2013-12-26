@@ -27,7 +27,7 @@ module.exports = {
   },
 
   findByCited: function (citedId, cb) {
-    var query = 'SELECT a.reference as id, b.title as title FROM ?? as a JOIN ?? as b on a.reference = b.id WHERE a.cited = ?';
+    var query = 'SELECT a.reference as id, b.title as title, a.type as type FROM ?? as a JOIN ?? as b on a.reference = b.id WHERE a.cited = ?';
     var data = [this.table, 'literatures', citedId];
     utils.exec(query, data, cb);
   },

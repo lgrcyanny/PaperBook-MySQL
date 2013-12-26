@@ -3,43 +3,14 @@
  */
 var literatureModel = require('../models/literature');
 var referenceModel = require('../models/reference');
+var configModel = require('../models/global-config');
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 var path = require('path');
 var moment = require('moment');
 var env = process.env.NODE_ENV || 'development';
 var config = require('../../config/config')[env];
-var globalConfig = {
-  categories: [{
-    name: 'Book',
-    info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'publisher', 'edition', 'editors', 'isbn']
-  },
-  {
-    name: 'BookSection',
-    info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'book_name','publisher', 'edition', 'editors', 'isbn']
-  },
-  {
-    name: 'Journal',
-    info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'publication', 'volume', 'issue', 'doi']
-  },
-  {
-    name: 'Conference',
-    info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'publication', 'city', 'doi']
-  },
-  {
-    name: 'Thesis',
-    info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'college']
-  },
-  {
-    name: 'Online',
-    info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references']
-  },
-  {
-    name: 'Report',
-    info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references']
-  }],
-  referencesType: ['Mention', 'Related', 'Use', 'Compare', 'Unknown']
-}
+
 
 exports.fetchById = function (req, res, next, id) {
   var literature = literatureModel.findById(id, function (err, results) {
@@ -72,12 +43,18 @@ exports.fetchByTitle = function (req, res, next) {
 }
 
 exports.showUploadPage = function (req, res) {
-  res.render('literatures/upload', {
-    title: 'Upload literature',
-    returnUrl: '',
-    requestUrl: '/literatures',
-    categories: globalConfig.categories,
-    referencesType: globalConfig.referencesType
+  configModel.findByTypes('*', function (err, results) {
+    if (err) {
+      return next(err);
+    }
+    var globalConfig = wrapConfigForShow(results[0]);
+    res.render('literatures/upload', {
+      title: 'Upload literature',
+      returnUrl: '',
+      requestUrl: '/literatures',
+      categories: globalConfig.literature_type,
+      referenceType: globalConfig.reference_type
+    });
   });
 }
 
@@ -102,7 +79,7 @@ exports.create = function (req, res, next) {
           if (err) {
             return next(err);
           }
-          console.log('Save references ' + saveRes);
+          //console.log('Save references ' + saveRes);
           res.send({
             success: true,
             literatureId: result.insertId
@@ -115,14 +92,19 @@ exports.create = function (req, res, next) {
 
 exports.showUpdatePage = function (req, res, next) {
   var literature = req.literature;
-  //console.log(literature);
-  res.render('literatures/update', {
-    title: 'Update Literature',
-    literature: literature,
-    returnUrl: '/myliterature',
-    requestUrl: '/literatures/update/' + literature.id,
-    categories: globalConfig.categories,
-    referencesType: globalConfig.referencesType
+  configModel.findByTypes('*', function (err, results) {
+    if (err) {
+      return next(err);
+    }
+    var globalConfig = wrapConfigForShow(results[0]);
+    res.render('literatures/update', {
+      title: 'Update Literature',
+      literature: literature,
+      returnUrl: '/myliterature',
+      requestUrl: '/literatures/update/' + literature.id,
+      categories: globalConfig.literature_type,
+      referenceType: globalConfig.reference_type
+    });
   });
 }
 
@@ -134,7 +116,7 @@ exports.update = function (req, res, next) {
       return next(err);
     }
     if (result) {
-      console.log(result);
+      //console.log(result);
       referenceModel.deleteByReference(id, function (err) {
         if (err) {
           return next(err);
@@ -149,7 +131,7 @@ exports.update = function (req, res, next) {
               if (err) {
                 return next(err);
               }
-              console.log(refSaveRes);
+              //console.log(refSaveRes);
               res.send({
                 success: true
               });
@@ -162,15 +144,22 @@ exports.update = function (req, res, next) {
 
 exports.showDetailPage = function (req, res) {
   var literature = req.literature;
-  referenceModel.findByCited(literature.id, function (err, citedResults) {
+  configModel.findByTypes('*', function (err, results) {
     if (err) {
-      throw err;
+      return next(err);
     }
-    res.render('literatures/detail', {
-      title: literature.title,
-      literature: literature,
-      referencesType: globalConfig.referencesType,
-      cited: citedResults
+    var globalConfig = wrapConfigForShow(results[0]);
+    referenceModel.findByCited(literature.id, function (err, citedResults) {
+      if (err) {
+        throw err;
+      }
+      res.render('literatures/detail', {
+        title: literature.title,
+        literature: literature,
+        referenceType: globalConfig.reference_type,
+        richCommentType: globalConfig.rich_comment,
+        cited: citedResults
+      });
     });
   });
 }
@@ -313,5 +302,12 @@ var wrapLiteratureForShow = function (literature) {
   literature.accessories = JSON.parse(literature.accessories);
   literature.references = JSON.parse(literature.references);
   return literature;
+}
+
+var wrapConfigForShow = function (config) {
+  config.literature_type = JSON.parse(config.literature_type);
+  config.reference_type = JSON.parse(config.reference_type);
+  config.rich_comment = JSON.parse(config.rich_comment);
+  return config;
 }
 

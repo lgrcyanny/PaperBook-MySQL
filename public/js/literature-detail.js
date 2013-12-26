@@ -5,6 +5,7 @@ $(function () {
     init: function () {
       this.addCheckBoxListener();
     },
+
     addCheckBoxListener: function () {
       $('div.tab-pane .checkbox-options input:checkbox').change(function () {
         var reftypes = [];
@@ -22,7 +23,7 @@ $(function () {
     },
 
     addRateListener: function () {
-      
+
     },
 
     sendRateRequest: function (rate) {
