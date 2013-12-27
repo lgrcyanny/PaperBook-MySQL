@@ -3,6 +3,12 @@ var moment = require('moment');
 
 exports.fetchDraft = function (req, res) {
   var literatureId = req.query.literatureId;
+  if (!req.user) {
+    res.send({
+      success: true,
+      comment: null
+    });
+  }
   var userId = req.user.id;
   richCommentModel.findDraft(literatureId, userId, function (err, results) {
     if (err) {
@@ -48,6 +54,12 @@ exports.fetchComments = function (req, res) {
  * param: comment
  */
 exports.saveDraft = function (req, res) {
+  if (!req.user) {
+    res.send({
+      success: false,
+      error: 'Please Signin.'
+    });
+  }
   var comment = req.body.comment;
   comment.publish = 0;
   comment.user_id = req.user.id;
@@ -60,6 +72,12 @@ exports.saveDraft = function (req, res) {
  * param: comment
  */
 exports.publish = function (req, res) {
+  if (!req.user) {
+    res.send({
+      success: false,
+      error: 'Please Signin.'
+    });
+  }
   var comment = req.body.comment;
   comment.publish = 1;
   comment.user_id = req.user.id;

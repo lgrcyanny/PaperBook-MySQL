@@ -70,7 +70,7 @@ module.exports = function (app, passport) {
   app.param('literatureId', literatures.fetchById);
 
   // Admin Route
-  app.get('/admin', admin.showAdminPage);
+  app.get('/admin', auth.requiresSignin, admin.showAdminPage);
   app.post('/admin/config', admin.saveConfig);
   app.post('/admin/users/remove', admin.removeUser);
 
