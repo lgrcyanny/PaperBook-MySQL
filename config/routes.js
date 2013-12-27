@@ -13,8 +13,12 @@ var search = require('../app/controllers/search');
 var admin = require('../app/controllers/admin');
 var auth = require('./middlewares/authorization');
 var literatures = require('../app/controllers/literatures');
+<<<<<<< HEAD
 var richComments = require('../app/controllers/rich-comments');
 
+=======
+var statistics = require('../app/controllers/statistics');
+>>>>>>> add fake statistics global view
 
 /**
  * Expose routes
@@ -47,7 +51,14 @@ module.exports = function (app, passport) {
   app.get('/search/results', search.showSearchResults);
   app.get('/complexsearch/results',search.showComplexSearchResults);
 
+<<<<<<< HEAD
   // Literature upload route
+=======
+  //statistics route
+  app.get('/statistics',statistics.globalView);
+
+  // Literature Route
+>>>>>>> add fake statistics global view
   app.post('/literatures', literatures.create);
   app.get('/literatures/upload', auth.requiresSignin, literatures.showUploadPage);
   app.post('/literatures/upload/files/literature', literatures.uploadFileLiterature);
