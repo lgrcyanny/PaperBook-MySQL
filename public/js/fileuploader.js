@@ -6,27 +6,27 @@ var fileUploader = {
   init: function () {
     this.addLiteratureFileUploadListener();
     this.addAccessorFileUploadListener();
-    fileUploader.addRemoveActionListener('#uploaded-literature .remove-file');
-    fileUploader.addRemoveActionListener('#uploaded-accessories .remove-file');
+    fileUploader.addRemoveActionListener('div.tab-pane #uploaded-literature .remove-file');
+    fileUploader.addRemoveActionListener('div.tab-pane #uploaded-accessories .remove-file');
   },
 
   addLiteratureFileUploadListener: function () {
-    $('#file-upload-literature').fileupload({
+    $('div.tab-pane #file-upload-literature').fileupload({
         url: fileUploader.rootURL + '/literatures/upload/files/literature',
         dataType: 'json',
         done: function (e, data) {
             var file = data.result.file;
-            var html = fileUploader.generateUploadedFilesHtml(file, 'file_path');
-            $('#uploaded-literature').empty().append(html);
-            fileUploader.addRemoveActionListener('#uploaded-literature .remove-file');
+            var html = fileUploader.generateUploadedFilesHtml(file, 'file');
+            $('div.tab-pane #uploaded-literature').empty().append(html);
+            fileUploader.addRemoveActionListener('div.tab-pane #uploaded-literature .remove-file');
             setTimeout(function () {
-                $('#upload-progress-literature').css('display', 'none');
-            }, 3000);
+                $('div.tab-pane #upload-progress-literature').css('display', 'none');
+            }, 2000);
         },
         progressall: function (e, data) {
             var progress = parseInt(data.loaded / data.total * 100, 10);
-            $('#upload-progress-literature').css('display', 'block');
-            $('#upload-progress-literature .progress-bar').css({
+            $('div.tab-pane #upload-progress-literature').css('display', 'block');
+            $('div.tab-pane #upload-progress-literature .progress-bar').css({
                 width: progress + '%'
             });
         }
@@ -35,22 +35,22 @@ var fileUploader = {
   },
 
   addAccessorFileUploadListener: function () {
-    $('#file-upload-accessory').fileupload({
+    $('div.tab-pane #file-upload-accessory').fileupload({
         url: fileUploader.rootURL + '/literatures/upload/files/accessory',
         dataType: 'json',
         done: function (e, data) {
             var file = data.result.file;
             var html = fileUploader.generateUploadedFilesHtml(file, 'accessories[]');
-            $('#uploaded-accessories').append(html);
-            fileUploader.addRemoveActionListener('#uploaded-accessories .remove-file');
+            $('div.tab-pane #uploaded-accessories').append(html);
+            fileUploader.addRemoveActionListener('div.tab-pane #uploaded-accessories .remove-file');
             setTimeout(function () {
-                $('#upload-progress-accessory').css('display', 'none');
-            }, 3000);
+                $('div.tab-pane #upload-progress-accessory').css('display', 'none');
+            }, 2000);
         },
         progressall: function (e, data) {
             var progress = parseInt(data.loaded / data.total * 100, 10);
-            $('#upload-progress-accessory').css('display', 'block');
-            $('#upload-progress-accessory .progress-bar').css(
+            $('div.tab-pane #upload-progress-accessory').css('display', 'block');
+            $('div.tab-pane #upload-progress-accessory .progress-bar').css(
                 'width',
                 progress + '%'
             );
@@ -79,9 +79,9 @@ var fileUploader = {
 
   generateUploadedFilesHtml: function (file, inputname) {
     var html = '<p>' +
-                file.name +
+                file.name + ' (' + file.size + ')' +
                 '<span data-path="' + file.path + '" class="remove-file glyphicon glyphicon-remove"></span>'  +
-                '<input type="hidden" name="' + inputname + '" value="' + file.path +'" />' +
+                '<input type="hidden" name="' + inputname + '" value="' + escape(JSON.stringify(file)) +'" />' +
                 '</p>';
     return html;
   }

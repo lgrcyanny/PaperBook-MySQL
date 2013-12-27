@@ -43,9 +43,11 @@
                 <li>
                   <a href="/statistics">Statistics</a>
                 </li>
+                <% if (req.user && req.user.user_type > 0) { %>
                 <li>
                   <a href="/admin">Admin</a>
                 </li>
+                <% } %>
                 <% if (req.isAuthenticated()) { %>
                 <li>
                   <a href="/users/<%=req.user.id %>"><%=req.user.username %></a>

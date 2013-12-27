@@ -5,6 +5,7 @@ $(function () {
     init: function () {
       this.addActionListener();
       this.initTypeahead();
+      this.addReferenceActionListener();
       this.addReferenceTypeaheadListener();
     },
 
@@ -15,25 +16,24 @@ $(function () {
     handleForm: function () {
       var data = {};
       // fetch  info
-      $('div#upload-info div.tab-pane.active input:not(input[type="file"]), div#upload-info div.tab-pane.active texarea').each(function () {
+      $('div#upload-info div.tab-pane.active input:not(input[type="file"]), div#upload-info div.tab-pane.active textarea').each(function () {
          data[$(this).attr('name')] = $(this).val();
       });
 
       if (data.hasOwnProperty('references[]')) {
         delete data['references[]'];
         var references = [];
-        $('div.form-group div.reference-item').each(function () {
+        $('div.tab-pane.active div.form-group div.reference-item').each(function () {
           var item = $(this);
           var title = $(this).find('input[name="references[]"]').val();
           if (title && title.length > 0) {
             var type = $(this).find('select[name="reference-type"]').val();
             var id = '';
             // User regexp to parse id
-            var regexp = /^\[(\d+)\]-(.*)/ig;
+            var regexp = /^\[(\d+)\]-.*/ig;
             var res = regexp.exec(title);
-            if (res !== null && res.length >= 3) {
+            if (res !== null && res.length >= 2) {
               id = res[1];
-              title = res[2];
             }
             references.push({
               id: id,
@@ -42,17 +42,33 @@ $(function () {
             });
           }
         });
-        data['references'] = references;
+        data['references'] = JSON.stringify(references);
+      } else {
+        data['references'] = JSON.stringify([]);
+      }
+
+      if (data.hasOwnProperty('file')) {
+        delete data['file'];
+        var fileinfo = $('div#upload-info div.tab-pane.active #uploaded-literature input').val();
+        // Since File Info is escaped by fileUploader.js, so must call unescape
+        fileinfo = unescape(fileinfo);
+        if (fileinfo) {
+          data['file'] = fileinfo;
+        }
+      } else {
+        data['file'] = JSON.stringify({});
       }
 
       // accessories file_path is special, handle it specially
       if (data.hasOwnProperty('accessories[]')) {
         delete data['accessories[]'];
         var accessories = [];
-        $('div#upload-info input[name="accessories[]"]').each(function () {
-          accessories.push($(this).val());
+        $('div#upload-info div.tab-pane.active input[name="accessories[]"]').each(function () {
+          accessories.push(JSON.parse(unescape($(this).val())));
         })
-        data['accessories'] = accessories;
+        data['accessories'] = JSON.stringify(accessories);
+      } else {
+        data['accessories'] = JSON.stringify([]);
       }
       return data;
     },
@@ -68,8 +84,8 @@ $(function () {
         },
         success: function (res) {
           if (res.success) {
-            console.log(res);
-            window.location.href = self.rootUrl + '/literatures/detail/' + res.literatureId;
+            //console.log(res);
+            window.location.href = self.rootUrl + '/myliterature'
           }
         }
       });
@@ -83,7 +99,7 @@ $(function () {
       var self = this;
       $('#submit-btn').click(function () {
         var data = self.handleForm();
-        //console.log(data);
+        console.log(data);
         self.sendRequest(data);
       });
 
@@ -94,20 +110,6 @@ $(function () {
           self.clearForm();
         }
       });
-
-      $('#add-reference-btn').click(function (e) {
-        var item = $(this).parents('div.reference-item').clone();
-        item.find('label:first-child').text('');
-        item.find('button').removeClass('btn-success').addClass('btn-danger');
-        item.find('button span').removeClass('glyphicon-plus').addClass('glyphicon-remove');
-        item.find('button').unbind('click').click(function () {
-          $(this).parents('div.reference-item').remove();
-        })
-        item.find('input').val('');
-        $(this).parents('.form-group').append(item);
-        self.addReferenceTypeaheadListener();
-        e.preventDefault();
-      })
     },
 
     initTypeahead: function () {
@@ -125,6 +127,30 @@ $(function () {
         'IEEE/WIC International Joint Conf on Web Intelligence and Intelligent Agent Technology',
         'ACM-MM: ACM Multimedia Conference']
       });
+    },
+
+    addReferenceActionListener: function () {
+      var self = this;
+      $('div.reference-item #add-reference-btn').click(function (e) {
+        console.log('add-reference-btn');
+        var item = $(this).parents('div.reference-item').clone();
+        item.find('label[for="references"]').text('');
+        item.find('span#add-reference-btn').removeClass('glyphicon-plus').addClass('glyphicon-remove');
+        item.find('input').val('');
+        $(this).parents('.form-group').append(item);
+        self.addReferenceRemoveListener();
+        self.addReferenceTypeaheadListener();
+      });
+
+      this.addReferenceRemoveListener();
+    },
+
+    addReferenceRemoveListener: function () {
+      if ($('div.reference-item span.glyphicon-remove')) {
+        $('div.reference-item span.glyphicon-remove').unbind('click').click(function (e) {
+          $(this).parents('div.reference-item').remove();
+        });
+      }
     },
 
     addReferenceTypeaheadListener: function () {

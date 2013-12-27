@@ -11,7 +11,7 @@
     <ul class="nav nav-tabs">
       <li class="dropdown active">
         <a href="#" id="myTabDrop1" class="dropdown-toggle" data-toggle="dropdown"><b>Category</b><b class="caret"></b></a>
-        <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
+        <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1" id="category-tabs">
           <% for (var i = 0; i < categories.length; i++) { %>
           <% var cat = categories[i] %>
           <li class="<%= i == 0 ? 'active' : '' %>">
@@ -57,15 +57,13 @@
                   <label for="reference-type" class="col-md-1 control-label">Type</label>
                   <div class="col-md-2">
                     <select  name="reference-type" class="form-control">
-                      <% for (var k = 0; k < referencesType.length; k++) { %>
-                        <option><%=referencesType[k] %></option>
+                      <% for (var k = 0; k < referenceType.length; k++) { %>
+                        <option><%=referenceType[k] %></option>
                       <% } %>
                     </select>
                   </div>
                   <div class="col-md-1">
-                    <button class="btn btn-success" id="add-reference-btn">
-                      <span class="glyphicon glyphicon-plus"></span>
-                    </button>
+                    <span id="add-reference-btn" class="glyphicon glyphicon-plus"></span>
                   </div>
                 </div>
               </div>

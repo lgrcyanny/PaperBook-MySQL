@@ -1,7 +1,62 @@
 <% layout('../layouts/default.ejs')  -%>
 <div class="search-box row">
-    <form class="form-horizontal" role="form" method="get" action="/search/results">
+  <div id="logo">
+    <img src="/img/logo.jpg" class="col-md-9 col-md-offset-1">
+  </div>
+    <form class="form" role="form" method="get" action="/search/results">
       <input type="text" name="query" class="form-control" placeholder="Search Literature">
-      <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-search"></span></button>
+      <div class="btn-group">
+        <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-search"></span></button>
+        <button type="submit "class="btn btn-danger" data-toggle="modal" data-target="#searchModal">
+          <span class="caret"></span>
+        </button>
+      </div>
     </form>
+    <div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h5 class="modal-title" id="myModalLabel">Find Literatures</h5>
+          </div>
+          <div class="modal-body">
+            <form id="ad-search-form">
+              <dl class="dl-horizontal ad-search-list">
+                <div class="ad-search-entry">
+                  <dt>with all of the words</dt>
+                  <dd><input type="text"></dd>
+                </div>
+                <div class="ad-search-entry">
+                  <dt>with the exact phrase</dt>
+                  <dd><input type="text"></dd>
+                </div>
+                <div class="ad-search-entry">
+                  <dt>with at least one of the words</dt>
+                  <dd><input type="text"></dd>
+                </div>
+                <div class="ad-search-entry">
+                  <dt>with at least one of the words</dt>
+                  <dd><input type="text"></dd>
+                </div>
+                <div class="ad-search-entry">
+                  <dt>without the words</dt>
+                  <dd><input type="text"></dd>
+                </div>
+                <div class="ad-search-entry">
+                  <dt>Return articles authored by</dt>
+                  <dd><input type="text" placeholder="e.g., PJ Hayes or McCarthy"></dd>
+                </div>
+                <div class="ad-search-entry">
+                  <dt>Return articles published in</dt>
+                  <dd><input type="text" placeholder="e.g., J Biol Chem or Nature"></dd>
+                </div>
+              </dl>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-search"></span></button>
+          </div>
+        </div>
+      </div>
+    </div>
 </div>
