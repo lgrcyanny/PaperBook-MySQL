@@ -13,6 +13,9 @@ var config = require('../../config/config')[env];
 
 
 exports.fetchById = function (req, res, next, id) {
+  if (typeof parseInt(id) !== 'number') {
+    next();
+  }
   var literature = literatureModel.findById(id, function (err, results) {
     if (err) return next(err);
     if (results.length === 0) {
@@ -43,17 +46,17 @@ exports.fetchByTitle = function (req, res, next) {
 }
 
 exports.showUploadPage = function (req, res) {
-  configModel.findByTypes('*', function (err, results) {
+  configModel.findByTypes(['literature_type', 'reference_type'], function (err, results) {
     if (err) {
       return next(err);
     }
-    var globalConfig = wrapConfigForShow(results[0]);
+    var globalConfig = results[0];
     res.render('literatures/upload', {
       title: 'Upload literature',
       returnUrl: '',
       requestUrl: '/literatures',
-      categories: globalConfig.literature_type,
-      referenceType: globalConfig.reference_type
+      categories: JSON.parse(globalConfig.literature_type),
+      referenceType: JSON.parse(globalConfig.reference_type)
     });
   });
 }
@@ -92,18 +95,18 @@ exports.create = function (req, res, next) {
 
 exports.showUpdatePage = function (req, res, next) {
   var literature = req.literature;
-  configModel.findByTypes('*', function (err, results) {
+  configModel.findByTypes(['literature_type', 'reference_type'], function (err, results) {
     if (err) {
       return next(err);
     }
-    var globalConfig = wrapConfigForShow(results[0]);
+    var globalConfig = results[0];
     res.render('literatures/update', {
       title: 'Update Literature',
       literature: literature,
       returnUrl: '/myliterature',
       requestUrl: '/literatures/update/' + literature.id,
-      categories: globalConfig.literature_type,
-      referenceType: globalConfig.reference_type
+      categories: JSON.parse(globalConfig.literature_type),
+      referenceType: JSON.parse(globalConfig.reference_type)
     });
   });
 }
@@ -144,11 +147,11 @@ exports.update = function (req, res, next) {
 
 exports.showDetailPage = function (req, res) {
   var literature = req.literature;
-  configModel.findByTypes('*', function (err, results) {
+  configModel.findByTypes(['reference_type', 'rich_comment'], function (err, results) {
     if (err) {
       return next(err);
     }
-    var globalConfig = wrapConfigForShow(results[0]);
+    var globalConfig = results[0];
     referenceModel.findByCited(literature.id, function (err, citedResults) {
       if (err) {
         throw err;
@@ -156,7 +159,7 @@ exports.showDetailPage = function (req, res) {
       res.render('literatures/detail', {
         title: literature.title,
         literature: literature,
-        referenceType: globalConfig.reference_type,
+        referenceType: JSON.parse(globalConfig.reference_type),
         richCommentType: globalConfig.rich_comment,
         cited: citedResults
       });
@@ -302,12 +305,5 @@ var wrapLiteratureForShow = function (literature) {
   literature.accessories = JSON.parse(literature.accessories);
   literature.references = JSON.parse(literature.references);
   return literature;
-}
-
-var wrapConfigForShow = function (config) {
-  config.literature_type = JSON.parse(config.literature_type);
-  config.reference_type = JSON.parse(config.reference_type);
-  config.rich_comment = JSON.parse(config.rich_comment);
-  return config;
 }
 

@@ -1,7 +1,9 @@
 <% layout('../layouts/default') -%>
 <% script('/js/literature-detail.js') -%>
-<% script('/js/literature-comment.js') -%>
 <% script('/js/temp.js') -%>
+<% script('/js/literature-brief-comment.js') -%>
+<% script('/js/literature-rich-comment.js') -%>
+
 
 <div class="row">
   <div class="col-md-8">
@@ -9,7 +11,7 @@
       <input type="hidden" id="literature-id" value="<%=literature.id %>"/>
       <h3><%=literature.title ? literature.title: '' %></h3>
       <div class="col-md-2">
-        <img src="/img/paper.jpg" alt="160x160" class="img-thumbnail"> 
+        <img src="/img/paper.jpg" alt="160x160" class="img-thumbnail">
       </div>
       <div id="literature-meta" class="col-md-6">
         <dl>
@@ -188,71 +190,11 @@
   </div>
 </div>
 
-<div id="comments">
-  <button class="btn btn-default pull-right" data-toggle="modal" data-target="#myComment">Add my comment</button>
+<div id="rich-comments">
+  <input type="hidden" name="rich-comment-type" id="rich-comment-type" value="<%=escape(richCommentType) %>" />
+  <button class="btn btn-success pull-right" data-toggle="modal" data-target="#rich-comment-modal">Add detail comment</button>
 
-  <div class="modal fade" id="myComment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-        </div>
-        <div class="modal-body">
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-success">Save changes</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <h3>Comments</h3>
-  <div id="comments-list">
-    <div class="panel-group" id="accordion">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h4 class="panel-title">
-            <a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-              Paper Comments #1
-            </a>
-          </h4>
-        </div>
-        <div id="collapseOne" class="panel-collapse collapse in">
-          <div class="panel-body">
-            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-          </div>
-        </div>
-      </div>
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h4 class="panel-title">
-            <a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
-              Paper Comments #2
-            </a>
-          </h4>
-        </div>
-        <div id="collapseTwo" class="panel-collapse collapse">
-          <div class="panel-body">
-            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-          </div>
-        </div>
-      </div>
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h4 class="panel-title">
-            <a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-              Paper Comments #3
-            </a>
-          </h4>
-        </div>
-        <div id="collapseThree" class="panel-collapse collapse">
-          <div class="panel-body">
-            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-          </div>
-        </div>
-      </div>
-    </div>
+  <h3>Detail Comments</h3>
+  <div id="rich-comments-list">
   </div>
 </div>

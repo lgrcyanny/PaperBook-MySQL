@@ -10,7 +10,7 @@ module.exports = {
   },
 
   findByUser: function (literatureId, useId, cb) {
-    var query = 'SELECT a.id as id, a.content as content FROM ?? AS a WHERE a.literature_id = ? AND a.publicshed = ? AND a.user_id = ?';
+    var query = 'SELECT a.id as id, a.content as content FROM ?? AS a WHERE a.literature_id = ? AND a.publicsh = ? AND a.user_id = ?';
     var data = [this.table, literatureId, userId, 0];
     utils.exec(query, data, cb);
   },
@@ -21,7 +21,7 @@ module.exports = {
   },
 
   update: function (id, data, cb) {
-    var query = 'UPDATE INTO brief_comments SET ? WHERE id = ?';
+    var query = 'UPDATE INTO brief_comments SET ? WHERE id = ' + id;
     utils.exec(query, data, id);
   }
 }

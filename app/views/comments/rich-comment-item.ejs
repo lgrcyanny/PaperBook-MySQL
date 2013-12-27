@@ -1,0 +1,22 @@
+<!--Param: comment-->
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h4 class="panel-title">
+      <a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#collapse-<%=comment.id %>">
+        <%=comment.content.Title ? comment.content.Title : 'No Title Yet! ' %>
+        <small><%=comment.username + ' ' %></small> <small><%=comment.created_at %></small>
+      </a>
+    </h4>
+  </div>
+  <div id="collapse-<%=comment.id %>" class="panel-collapse in">
+    <div class="panel-body">
+      <% var keys = Object.keys(comment.content); %>
+      <% for (var j = 0; j < keys.length; j++) { %>
+        <% if (keys[j] !== 'Title') { %>
+          <strong><%=keys[j] %></strong><br>
+          <%=comment.content[keys[j]] %><br>
+        <% } %>
+      <% } %>
+    </div>
+  </div>
+</div>
