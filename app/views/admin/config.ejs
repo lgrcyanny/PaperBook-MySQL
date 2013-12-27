@@ -1,0 +1,164 @@
+<% layout('../layouts/default.ejs')  -%>
+<% script('/js/admin-config.js') -%>
+
+<ul class="nav nav-tabs">
+  <li class="active"><a href="#literature-config" data-toggle="tab">Literature</a></li>
+  <li><a href="#rich-comment-config" data-toggle="tab">Detail Comment</a></li>
+  <li><a href="#ref-config" data-toggle="tab">Reference Relationship</a></li>
+  <li><a href="#user-config" data-toggle="tab">User List</a></li>
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content well" id="admin-config">
+  <div class="tab-pane fade in active" id="literature-config">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th class="col-md-2">Category</th>
+          <th class="col-md-9">Config Choice</th>
+          <th class="col-md-1">Option</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (var i = 0; i < literatureTypes.length; i++) { %>
+        <% var typeItem = literatureTypes[i]; %>
+        <tr>
+          <td>
+            <input type="text" class="col-md-10" name="literature-type-name" value="<%=typeItem.name %>">
+          </td>
+          <td>
+            <% for (var j = 0; j < literatureConfigInfo.length; j++) { %>
+            <% var infoItem = literatureConfigInfo[j]; %>
+              <div class="checkbox-inline">
+                <label>
+                  <input type="checkbox" name="<%=infoItem %>" value="<%=infoItem %>" <%=typeItem.info.indexOf(infoItem) >= 0 ? 'checked' : '' %> ><%=infoItem %>
+                </label>
+              </div>
+            <% } %>
+          </td>
+          <td>
+            <span class="glyphicon glyphicon-remove remove-btn"></span>
+          </td>
+        </tr>
+        <% } %>
+        <tr>
+          <td>
+            <input type="text" class="col-md-10" name="literature-type-name" >
+          </td>
+          <td>
+            <% for (var j = 0; j < literatureConfigInfo.length; j++) { %>
+            <% var infoItem = literatureConfigInfo[j]; %>
+              <div class="checkbox-inline">
+                <label>
+                  <input type="checkbox" name="<%=infoItem %>" value="<%=infoItem %>"><%=infoItem %>
+                </label>
+              </div>
+            <% } %>
+          </td>
+          <td>
+            <span class="glyphicon glyphicon-plus add-btn"></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <button class="btn btn-success save-btn" id="literature-config-save-btn">Save Changes</button>
+    <button class="btn btn-default cancel-btn" id="literature-config-cancle-btn">Cancel</button>
+  </div>
+
+  <div class="tab-pane fade" id="rich-comment-config">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th class="col-md-10">Category</th>
+          <th class="col-md-2">Option</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (var i = 0; i < richComment.length; i++) { %>
+        <tr>
+          <td>
+            <input type="text" class="col-md-2" name="rich-comment" value="<%=richComment[i] %>" />
+          </td>
+          <td>
+            <span class="glyphicon glyphicon-remove remove-btn"></span>
+          </td>
+        </tr>
+        <% } %>
+        <tr>
+          <td>
+            <input type="text" class="col-md-2"  name="rich-comment">
+          </td>
+          <td>
+            <span class="glyphicon glyphicon-plus add-btn"></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="btn btn-success save-btn" id="rich-comment-config-save-btn">Save Changes</button>
+    <button class="btn btn-default cancel-btn" id="rich-comment-config-cancel-btn">Cancel</button>
+  </div>
+
+
+  <div class="tab-pane fade" id="ref-config">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th class="col-md-10">Category</th>
+          <th class="col-md-2">Option</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (var i = 0; i <  referenceType.length; i++) { %>
+        <tr>
+          <td>
+            <input type="text" class="col-md-2" name="reference-type" value="<%=referenceType[i] %>" />
+          </td>
+          <td>
+            <span class="glyphicon glyphicon-remove remove-btn"></span>
+          </td>
+        </tr>
+        <% } %>
+        <tr>
+          <td>
+            <input type="text" class="col-md-2"  name="reference-type">
+          </td>
+          <td>
+            <span class="glyphicon glyphicon-plus add-btn"></span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="btn btn-success save-btn" id="ref-config-save-btn">Save Changes</button>
+    <button class="btn btn-default cancel-btn" id="ref-config-cancel-btn">Cancel</button>
+  </div>
+
+
+  <div class="tab-pane fade" id="user-config">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th class="col-md-2">id</th>
+          <th class="col-md-2">username</th>
+          <th class="col-md-2">Email</th>
+          <th class="col-md-2">Fullname</th>
+          <th class="col-md-3">Sign up at</th>
+          <th class="col-md-1">Option</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (var i = 0; i < users.length; i++) {%>
+        <% var user = users[i]; %>
+        <tr>
+          <td><%=user.id %></td>
+          <td><%=user.username %></td>
+          <td><%=user.email %></td>
+          <td><%=user.fullname ? user.fullname : 'NA' %></td>
+          <td><%=moment(user.sign_up_at).format('YYYY-MM-DD HH:mm:ss') %></td>
+          <td><span class="glyphicon glyphicon-remove remove-btn user-remove-btn"></span></td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>

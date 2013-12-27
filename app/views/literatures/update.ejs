@@ -7,86 +7,99 @@
 <% script('/js/literature-uploader.js') -%>
 <% script('/lib/bootstrap/js/bootstrap3-typeahead.min.js') -%>
 <div class="row">
-  <!--Additional Info-->
-  <div id="additional-info">
+  <div id="upload-info">
     <ul class="nav nav-tabs">
       <li class="dropdown active">
         <a href="#" id="myTabDrop1" class="dropdown-toggle" data-toggle="dropdown"><b>Category</b><b class="caret"></b></a>
-        <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
-          <li class="<%=literature.category === 'Book' ? 'active' : ''  %>">
-            <a href="#book" tabindex="-1" data-toggle="tab">Book</a>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1" id="category-tabs">
+          <% for (var i = 0; i < categories.length; i++) { %>
+          <% var cat = categories[i] %>
+          <li class="<%= literature.category === cat.name ? 'active' : '' %>">
+            <a href="#<%=cat.name %>" tabindex="-1" data-toggle="tab"><%=cat.name %></a>
           </li>
-          <li class="<%=literature.category === 'Book Section' ? 'active' : ''  %>">
-            <a href="#book-section" tabindex="-1" data-toggle="tab">Book Section</a>
-          </li>
-          <li class="<%=literature.category === 'Journal' ? 'active' : ''  %>">
-            <a href="#journal" tabindex="-1" data-toggle="tab">Journal</a>
-          </li>
-          <li class="<%=literature.category === 'Conference' ? 'active' : ''  %>">
-            <a href="#conference" tabindex="-1" data-toggle="tab">Conference</a>
-          </li>
-          <li class="<%=literature.category === 'Thesis' ? 'active' : ''  %>">
-            <a href="#thesis" tabindex="-1" data-toggle="tab">Thesis</a>
-          </li>
+          <% } %>
         </ul>
       </li>
     </ul>
 
     <div class="tab-content well">
-      <div class="tab-pane fade <%=literature.category === 'Book' ? 'in active' : ''  %>" id="book">
+      <% for (var i = 0; i < categories.length; i++) { %>
+      <% var cat = categories[i] %>
+      <div class="tab-pane fade <%= literature.category === cat.name ? 'in active' : ''  %>" id="<%=cat.name %>">
         <form class="form-horizontal" role="form">
-          <div class="form-group">
-            <label for="title" class="col-md-1 control-label">Title</label>
-            <div class="col-md-7">
-              <input type="text" name="title" id="title" class="form-control" placeholder="Title" requried value="<%=literature.title ? literature.title : '' %>">
-            </div>
-            <label for="year" class="col-md-1 control-label">Year</label>
-            <div class="col-md-3">
-              <input type="number" name="year" id="year" class="form-control" value="<%=literature.year ? literature.year : 0 %>">
-            </div>
-          </div>
+          <input type="hidden"  name="category" value="<%=cat.name %>"/>
+           <% for (var j = 0; j < cat.info.length; j++) { %>
+            <% var item = cat.info[j]; %>
+            <% if (item.toLowerCase() !== 'references') { %>
+              <div class="form-group">
+                <label for="<%=item %>" class="col-md-1 control-label"><%=item.toUpperCase() %></label>
+                <% if (item.toLowerCase() === 'abstract' ) { %>
+                  <div class="col-md-11">
+                    <textarea type="text" rows="8" name="<%=item %>" id="<%=item %>" class="form-control" placeholder="<%=item %>"><%= literature.abstract ? literature.abstract : '' %></textarea>
+                  </div>
+                <% } else if (['year', 'volume', 'issue'].indexOf(item) >= 0) { %>
+                  <div class="col-md-3">
+                    <input type="number" name="<%=item %>" id="<%=item %>" class="form-control" placeholder="<%=item %>"  value="<%=literature[item] ? literature[item] : 0 %>"/>
+                  </div>
+                <% } else { %>
+                   <div class="col-md-11">
+                    <input type="text" name="<%=item %>" id="<%=item %>" class="form-control" placeholder="<%=item %>" value="<%=literature[item] ? literature[item] : '' %>"/>
+                  </div>
+                <% } %>
+              </div>
+            <% } else { %>
+              <div class="form-group">
+                <% for (var p = 0; p < literature.references.length; p++) { %>
+                <% var refitem = literature.references[p]; %>
+                <div class="reference-item">
+                  <label for="references" class="col-md-1 control-label"><%=p === 0 ? 'REFERENCES' : '' %></label>
+                  <div class="col-md-7">
+                    <input type="text" data-provide="typeahead" name="references[]" class="form-control" placeholder="reference" value="<%=refitem.title %>">
+                  </div>
+                  <label for="reference-type" class="col-md-1 control-label">Type</label>
+                  <div class="col-md-2">
+                    <select  name="reference-type" class="form-control">
+                      <% for (var k = 0; k < referenceType.length; k++) { %>
+                        <option <%= referenceType[k] === refitem.type ? 'selected' : 0%> >
+                          <%=referenceType[k] %>
+                        </option>
+                      <% } %>
+                    </select>
+                  </div>
+                  <div class="col-md-1">
+                    <% if (p === 0 ) { %>
+                      <span id="add-reference-btn" class="glyphicon glyphicon-plus"></span>
+                    <% } else { %>
+                      <span class="glyphicon glyphicon-remove"></span>
+                    <% } %>
+                  </div>
+                </div>
+                <% } %>
+                <% if (literature.references.length === 0) { %>
+                <div class="reference-item">
+                  <label for="references" class="col-md-1 control-label">REFERENCES</label>
+                  <div class="col-md-7">
+                    <input type="text" data-provide="typeahead" name="references[]" class="form-control" placeholder="reference">
+                  </div>
+                  <label for="reference-type" class="col-md-1 control-label">Type</label>
+                  <div class="col-md-2">
+                    <select  name="reference-type" class="form-control">
+                      <% for (var k = 0; k < referenceType.length; k++) { %>
+                        <option><%=referenceType[k] %></option>
+                      <% } %>
+                    </select>
+                  </div>
+                  <div class="col-md-1">
+                    <span id="add-reference-btn" class="glyphicon glyphicon-plus"></span>
+                  </div>
+                </div>
+                <% } %>
+              </div>
+            <% } %>
+          <% } %>
 
           <div class="form-group">
-            <label for="authors" class="col-md-1 control-label">Authors</label>
-            <div class="col-md-11">
-              <input type="text" name="authors" id="authors" class="form-control" placeholder="Authors" value="<%=literature.authors ? literature.authors : '' %>">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="url" class="col-md-1 control-label">Url</label>
-            <div class="col-md-7">
-              <input type="url" name="url" id="url" class="form-control" placeholder="Url" value="<%=literature.url? literature.url : '' %>">
-            </div>
-            <label for="pages" class="col-md-1 control-label">Pages</label>
-            <div class="col-md-3">
-              <input type="text" name="pages" id="pages" class="form-control" value="<%=literature.pages ? literature.pages : '' %>">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="keywords" class="col-md-1 control-label">Keywords</label>
-            <div class="col-md-11">
-              <input type="text" name="keywords" id="keywords" class="form-control" placeholder="Keywords" value="<%=literature.keywords ? literature.keywords : '' %>">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="abstract" class="col-md-1 control-label">Abstract</label>
-            <div class="col-md-11">
-                <textarea type="text" rows="8" name="abstract" id="abstract" class="form-control" placeholder="Abstract"><%=literature.abstract ? literature.abstract : '' %></textarea>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="references" class="col-md-1 control-label">References</label>
-            <div class="col-md-11">
-                <textarea type="text" rows="6" name="references" id="references" class="form-control" placeholder="References" ><%=literature.references ? literature.references : '' %></textarea>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="col-md-1 control-label">Upload</label>
+            <label class="col-md-1 control-label">UPLOAD</label>
             <div class="col-md-11">
               <span class="btn btn-warning fileinput-button">
                   <i class="glyphicon glyphicon-plus"></i>
@@ -101,19 +114,19 @@
                   <div class="progress-bar progress-bar-success"></div>
               </div>
               <div id="uploaded-literature">
-                <% if (literature.filename) { %>
-                <p>
-                  <%=literature.filename ? literature.filename : ''%>
-                  <span data-path="<%=literature.file_path ? literature.file_path : ''%>" class="remove-file glyphicon glyphicon-remove"></span>
-                  <input type="hidden" name="file_path" value="<%=literature.file_path ? literature.file_path : '' %>" />
-                </p>
+                <% if (literature.file && literature.file.name) { %>
+                 <p>
+                   <%=literature.file.name + ' (' + literature.file.size + ')' %>
+                   <span data-path="<%=literature.file.path %>" class="remove-file glyphicon glyphicon-remove"></span>
+                   <input type="hidden" name="file" value="<%=escape(JSON.stringify(literature.file)) %>" />
+                 </p>
                 <% } %>
               </div>
             </div>
           </div>
 
           <div class="form-group">
-            <label class="col-md-1 control-label">Upload</label>
+            <label class="col-md-1 control-label">UPLOAD</label>
             <div class="col-md-11">
               <span class="btn btn-default fileinput-button">
                   <i class="glyphicon glyphicon-plus"></i>
@@ -128,143 +141,22 @@
                   <div class="progress-bar progress-bar-success"></div>
               </div>
               <div id="uploaded-accessories">
-                <% if (literature.accessories) { %>
-                <% for (var i = 0; i < literature.accessories.length; i++) { %>
-                <%    var accessory = literature.accessories[i]; %>
-                <p>
-                  <%=accessory.name ? accessory.name : ''%>
-                  <span data-path="<%=accessory.path ? accessory.path : ''%>" class="remove-file glyphicon glyphicon-remove"></span>
-                  <input type="hidden" name="accessories[]" value="<%=accessory.path ? accessory.path : ''%>" />
-                </p>
+                <% if (literature.accessories && literature.accessories.length) { %>
+                <% for (var q = 0; q < literature.accessories.length; q++) { %>
+                 <%  var accessory = literature.accessories[q]; %>
+                 <p>
+                   <%=accessory.name + ' (' + accessory.size + ')'  %>
+                   <span data-path="<%=accessory.path %>" class="remove-file glyphicon glyphicon-remove"></span>
+                   <input type="hidden" name="accessories[]" value="<%=escape(JSON.stringify(accessory)) %>" />
+                 </p>
                 <%  } %>
-                <% } %>
+                <%  } %>
               </div>
             </div>
           </div>
-
-          <div class="form-group">
-            <label for="publisher" class="col-md-1 control-label">Publisher</label>
-            <div class="col-md-11">
-              <input type="text" name="publisher" id="publisher" class="form-control" placeholder="Publisher" value="<%=literature.publisher ? literature.publisher : '' %>">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="editor" class="col-md-1 control-label">Edition</label>
-            <div class="col-md-11">
-              <input type="text" name="edition" id="edition" class="form-control" placeholder="Edition" value="<%=literature.edition ? literature.edition : '' %>">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="editor" class="col-md-1 control-label">Editors</label>
-            <div class="col-md-11">
-              <input type="text" name="editors" id="editors" class="form-control" placeholder="Editors" value="<%=literature.editors ? literature.editors : '' %>">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="isbn" class="col-md-1 control-label">ISBN</label>
-            <div class="col-md-11">
-              <input type="text" name="isbn" id="isbn" class="form-control" placeholder="ISBN" value="<%=literature.isbn ? literature.isbn : '' %>">
-            </div>
-          </div>
         </form>
       </div>
-
-      <div class="tab-pane fade <%=literature.category === 'Book Section' ? 'in active' : ''  %>" id="book-section">
-        <form class="form-horizontal" role="form">
-          <div class="form-group">
-            <label for="book_name" class="col-md-1 control-label">Book Name</label>
-            <div class="col-md-11">
-              <input type="text" name="book_name" id="book_name" class="form-control" placeholder="Book" value="<%=literature.book_name ? literature.book_name : '' %>">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="publisher" class="col-md-1 control-label">Publisher</label>
-            <div class="col-md-11">
-              <input type="text" name="publisher" id="publisher" class="form-control" placeholder="Publisher" value="<%=literature.publisher ? literature.publisher : '' %>">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="editor" class="col-md-1 control-label">Edition</label>
-            <div class="col-md-11">
-              <input type="text" name="edition" id="edition" class="form-control" placeholder="Edition" value="<%=literature.edition ? literature.edition : '' %>">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="editor" class="col-md-1 control-label">Editors</label>
-            <div class="col-md-11">
-              <input type="text" name="editors" id="editors" class="form-control" placeholder="Editors" value="<%=literature.editor ? literature.editor : '' %>">
-            </div>
-          </div>
-        </form>
-      </div>
-
-      <div class="tab-pane fade <%=literature.category === 'Journal' ? 'in active' : ''  %>" id="journal">
-        <form class="form-horizontal" role="form">
-          <div class="form-group">
-            <label for="publication" class="col-md-1 control-label">Publication</label>
-            <div class="col-md-11">
-              <input type="text" data-provide="typeahead" autocomplete="off" name="publication" id="publication"  class="form-control" placeholder="Publication" value="<%=literature.publication ? literature.publication : '' %>">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="volume" class="col-md-1 control-label">Volume</label>
-            <div class="col-md-3">
-              <input type="number" name="volume" id="volume" class="form-control" placeholder="Volume" value="<%=literature.volume ? literature.volume : 0 %>">
-            </div>
-            <label for="issue" class="col-md-1 control-label">Issue</label>
-            <div class="col-md-3">
-              <input type="number" name="issue" id="issue" class="form-control" placeholder="Issue" value="<%=literature.issue ? literature.issue : 0 %>">
-            </div>
-            <label for="doi" class="col-md-1 control-label">DOI</label>
-            <div class="col-md-3">
-              <input type="text" name="doi" id="doi" class="form-control" placeholder="DOI" value="<%=literature.doi ? literature.doi : '' %>">
-            </div>
-          </div>
-        </form>
-      </div>
-
-      <div class="tab-pane fade <%=literature.category === 'Conference' ? 'in active' : ''  %>" id="conference">
-        <form class="form-horizontal" role="form">
-          <div class="form-group">
-            <label for="publication" class="col-md-1 control-label">Publication</label>
-            <div class="col-md-11">
-              <input type="text" data-provide="typeahead" autocomplete="off" name="publication" id="publication" class="form-control" placeholder="Publication" value="<%=literature.publication ? literature.publication : '' %>">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="city" class="col-md-1 control-label">City</label>
-            <div class="col-md-11">
-              <input type="text" name="city" id="city" class="form-control" placeholder="City" value="<%=literature.city ? literature.city : '' %>">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="doi" class="col-md-1 control-label">DOI</label>
-            <div class="col-md-3">
-              <input type="text" name="doi" id="doi" class="form-control" placeholder="DOI" value="<%=literature.doi ? literature.doi : '' %>">
-            </div>
-          </div>
-        </form>
-      </div>
-
-      <div class="tab-pane fade <%=literature.category === 'Thesis' ? 'in active' : ''  %>" id="thesis">
-        <form class="form-horizontal" role="form">
-          <div class="form-group">
-            <label for="college" class="col-md-1 control-label">College</label>
-            <div class="col-md-11">
-              <input type="text" name="college" id="college" class="form-control" placeholder="College" value="<%=literature.college ? literature.college : '' %>">
-            </div>
-          </div>
-        </form>
-      </div>
+      <% } %>
     </div>
   </div>
   <div class="pull-right">

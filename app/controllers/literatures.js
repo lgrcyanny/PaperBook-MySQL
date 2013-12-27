@@ -3,6 +3,7 @@
  */
 var literatureModel = require('../models/literature');
 var referenceModel = require('../models/reference');
+var configModel = require('../models/global-config');
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 var path = require('path');
@@ -10,7 +11,11 @@ var moment = require('moment');
 var env = process.env.NODE_ENV || 'development';
 var config = require('../../config/config')[env];
 
+
 exports.fetchById = function (req, res, next, id) {
+  if (typeof parseInt(id) !== 'number') {
+    next();
+  }
   var literature = literatureModel.findById(id, function (err, results) {
     if (err) return next(err);
     if (results.length === 0) {
@@ -41,44 +46,24 @@ exports.fetchByTitle = function (req, res, next) {
 }
 
 exports.showUploadPage = function (req, res) {
-  res.render('literatures/upload', {
-    title: 'Upload literature',
-    returnUrl: '',
-    requestUrl: '/literatures',
-    categories: [{
-      name: 'Book',
-      info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'publisher', 'edition', 'editors', 'isbn']
-    },
-    {
-      name: 'BookSection',
-      info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'book_name','publisher', 'edition', 'editors', 'isbn']
-    },
-    {
-      name: 'Journal',
-      info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'publication', 'volume', 'issue', 'doi']
-    },
-    {
-      name: 'Conference',
-      info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'publication', 'city', 'doi']
-    },
-    {
-      name: 'Thesis',
-      info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references', 'college']
-    },
-    {
-      name: 'Online',
-      info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references']
-    },
-    {
-      name: 'Report',
-      info: ['title', 'year', 'authors', 'url', 'pages', 'keywords', 'abstract', 'references']
-    }],
-    referencesType: ['Mention', 'Related', 'Use', 'Compare', 'Unknown']
+  configModel.findByTypes(['literature_type', 'reference_type'], function (err, results) {
+    if (err) {
+      return next(err);
+    }
+    var globalConfig = results[0];
+    res.render('literatures/upload', {
+      title: 'Upload literature',
+      returnUrl: '',
+      requestUrl: '/literatures',
+      categories: JSON.parse(globalConfig.literature_type),
+      referenceType: JSON.parse(globalConfig.reference_type)
+    });
   });
 }
 
 exports.create = function (req, res, next) {
   var literature = wrapLiteratureForDBSave(req.user.id, req.body.literature);
+  //console.log(req.body);
   literatureModel.save(literature, function (err, result) {
     if (err) {
       return next(err);
@@ -86,28 +71,43 @@ exports.create = function (req, res, next) {
     //console.log(req.body.literature.references);
     if (result) {
       // Since object param is parsed by reference, so references is stringified now.
-      var references = JSON.parse(req.body.literature.references);
-      referenceModel.save(result.insertId, references, function (err, saveRes) {
-        if (err) {
-          return next(err);
-        }
-
+      var references = JSON.parse(literature.references);
+      if (references.length === 0) {
         res.send({
           success: true,
           literatureId: result.insertId
         });
-      })
+      } else {
+        referenceModel.save(result.insertId, references, function (err, saveRes) {
+          if (err) {
+            return next(err);
+          }
+          //console.log('Save references ' + saveRes);
+          res.send({
+            success: true,
+            literatureId: result.insertId
+          });
+        });
+      }
     }
   });
 }
 
 exports.showUpdatePage = function (req, res, next) {
   var literature = req.literature;
-  res.render('literatures/upload', {
-    title: 'Update Literature',
-    literature: literature,
-    returnUrl: '/myliterature',
-    requestUrl: '/literatures/update/' + literature.id
+  configModel.findByTypes(['literature_type', 'reference_type'], function (err, results) {
+    if (err) {
+      return next(err);
+    }
+    var globalConfig = results[0];
+    res.render('literatures/update', {
+      title: 'Update Literature',
+      literature: literature,
+      returnUrl: '/myliterature',
+      requestUrl: '/literatures/update/' + literature.id,
+      categories: JSON.parse(globalConfig.literature_type),
+      referenceType: JSON.parse(globalConfig.reference_type)
+    });
   });
 }
 
@@ -119,26 +119,57 @@ exports.update = function (req, res, next) {
       return next(err);
     }
     if (result) {
-      console.log(result);
-      res.send({
-        success: true,
-        literatureId: id
+      //console.log(result);
+      referenceModel.deleteByReference(id, function (err) {
+        if (err) {
+          return next(err);
+        }
+        var references = JSON.parse(literature.references);
+          if (references.length === 0) {
+            res.send({
+              success: true
+            });
+          } else {
+            referenceModel.save(id, references, function (err, refSaveRes) {
+              if (err) {
+                return next(err);
+              }
+              //console.log(refSaveRes);
+              res.send({
+                success: true
+              });
+            });
+          }
       });
     }
   });
 }
 
-
 exports.showDetailPage = function (req, res) {
   var literature = req.literature;
-  res.render('literatures/detail', {
-    title: literature.title,
-    literature: literature
+  configModel.findByTypes(['reference_type', 'rich_comment'], function (err, results) {
+    if (err) {
+      return next(err);
+    }
+    var globalConfig = results[0];
+    referenceModel.findByCited(literature.id, function (err, citedResults) {
+      if (err) {
+        throw err;
+      }
+      res.render('literatures/detail', {
+        title: literature.title,
+        literature: literature,
+        referenceType: JSON.parse(globalConfig.reference_type),
+        richCommentType: globalConfig.rich_comment,
+        cited: citedResults
+      });
+    });
   });
 }
 
 exports.uploadFileLiterature = function (req, res) {
   var file = req.files.literature;
+  //console.log(file);
   uploadFile(file, 'literatures', req.user.username, res);
 }
 
@@ -205,21 +236,6 @@ exports.fetchCited = function (req, res) {
   })
 }
 
-exports.removeCited = function (req, res) {
-  var id = req.body.referenceId;
-  referenceModel.deleteByReference(id, function (err, results) {
-    if (err) {
-      res.send({
-        success: false,
-        error: err
-      })
-    }
-    res.send({
-      success: true,
-      results: results
-    })
-  })
-}
 
 /**
  * Private Functions
@@ -234,6 +250,9 @@ exports.removeCited = function (req, res) {
 var uploadFile = function (file, type, username, res) {
   var filename = file.originalFilename;
   var filepath = file.path;
+  var filetype = file.type.split('/');
+  var filesize = getFileSize(file.size);
+
   var year = moment().format('YYYY');
   var month = moment().format('MM');
   var date = moment().format('DD');
@@ -254,6 +273,9 @@ var uploadFile = function (file, type, username, res) {
         success: true,
         file: {
           name: filename,
+          type: filetype[0],
+          size: filesize,
+          extension: filetype[1],
           path: serverpath
         }
       });
@@ -261,39 +283,27 @@ var uploadFile = function (file, type, username, res) {
   });
 }
 
+var getFileSize = function (size) {
+  var res = '';
+  if (size > 1000000) {
+    size = Math.round(size / 1000000);
+    res = size + 'MB';
+  } else {
+    size = Math.round(size / 1000);
+    res = size + 'KB';
+  }
+  return res;
+}
+
 var wrapLiteratureForDBSave = function (userid, literature) {
-  if (literature.accessories) {
-    literature.accessories = JSON.stringify(literature.accessories);
-  }
-
-  if (!literature.file_path) {
-    literature.file_path = null;
-  }
-
-  literature.references = JSON.stringify(literature.references);
-
   literature.user_id = userid;
   return literature;
 }
 
 var wrapLiteratureForShow = function (literature) {
-  if (literature.file_path) {
-    literature.filename = path.basename(literature.file_path);
-  }
-
-  if (literature.accessories) {
-    var accessories = JSON.parse(literature.accessories);
-    literature.accessories = [];
-    for (var i = 0; i <  accessories.length; i++) {
-      var item = accessories[i];
-      var obj = {
-        name: path.basename(item),
-        path: item
-      }
-      literature.accessories.push(obj);
-    }
-  }
-
+  literature.file = JSON.parse(literature.file);
+  literature.accessories = JSON.parse(literature.accessories);
   literature.references = JSON.parse(literature.references);
   return literature;
 }
+

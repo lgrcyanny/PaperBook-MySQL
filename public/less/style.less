@@ -3,6 +3,10 @@ body
   padding-top: 70px;
 }
 
+small {
+  color: #999999;
+}
+
 #resultStats
 {
   display: block;
@@ -10,25 +14,30 @@ body
 }
 
 .main-body {
-  min-height: 650px;
+  min-height: 550px;
 }
 
 .search-box {
-  margin-top: 250px;
+  margin-top: 120px;
   width: 700px;
   margin-left: auto;
   margin-right: auto;
   form {
     width: 100%;
     input {
-      width: 580px;
+      width: 600px;
       float: left;
     }
-    button {
-      width: 72px;
+    .btn-group {
       float: left;
       margin-left: 10px;
     }
+    .btn-group button{
+      width: 40px;
+    }
+  }
+  div#logo {
+    margin-bottom: 150px;
   }
 }
 
@@ -43,16 +52,6 @@ body
   width: 550px;
 }
 
-.remove-file {
-  margin-left: 10px;
-  color: #08c;
-  cursor: pointer;
-}
-
-div.form-group div.reference-item {
-  margin-top: 15px !important;
-  height: 30px;
-}
 
 div.error-block {
   width: 400px;
@@ -80,3 +79,63 @@ footer *{
   margin-right: auto;
 }
 
+.remove-file {
+  margin-left: 10px;
+  color: #08c;
+  cursor: pointer;
+}
+
+div.reference-item #add-reference-btn, div.reference-item span.glyphicon-remove {
+  color: #08c;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+div#literature-meta span.file-download-btn img{
+  cursor: pointer;
+}
+
+div#literature-rating .glyphicon {
+  cursor: pointer;
+  color: #FF9900;
+}
+
+div#literature-detail-tab  {
+  .checkbox-options label {
+    padding-right: 10px;
+  }
+  div.tab-pane#cited, div.tab-pane#references {
+    li {
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+  }
+}
+
+/**
+ * upload.ejs and update.ejs
+ */
+div.form-group div.reference-item {
+  margin-top: 15px !important;
+  height: 30px;
+}
+
+.ad-search-list dt{
+  width: 200px;
+  margin: 5px;
+}
+
+.ad-search-list dd input{
+  margin: 5px;
+  width: 300px;
+}
+
+/**
+ * admin/config.ejs
+ */
+div#admin-config {
+  span.glyphicon {
+    color: #08c;
+    cursor: pointer;
+  }
+}

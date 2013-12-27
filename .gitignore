@@ -3,4 +3,3 @@ node_modules/
 config/config.js
 Makefile
 uploads/*
-public/lib/highcharts

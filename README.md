@@ -13,7 +13,7 @@
 **NOTE:** You need to have node.js, mysql installed <BR>
 1. Clone the project
 ```sh
-  $ git clone https://github.com/lgrcyanny/PaperBook
+  $ git clone https://github.com/lgrcyanny/PaperBook-MySQL
   $ npm install
   $ cp config/config.disk.js config/config.js
 ```
@@ -21,7 +21,7 @@ Please config your mysql in the `config.js`;
 
 2. Install mysql[http://dev.mysql.com/downloads/]
 
-3. Start mysql service
+3. Start mysql service and change mysql root password into 'root'
 
 4. Build the database
 ```sh
