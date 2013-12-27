@@ -7,15 +7,13 @@ exports.index = function (req, res) {
 
 exports.showSearchResults = function (req, res) {
 
-  var title = req.query.query,
+  var title = (req.query.query === undefined) ? req.session.query : req.query.query,
     startTime = new Date()
       .getTime(),
     page = req.query.p ? parseInt(req.query.p) : 1,
     pageSize = 10;
 
-  title = (title === undefined) ? req.session.query : title;
-
-  if (page == 1) {
+  if (req.query.query) {
     Literature.findAllByTitle(title, function (err, results) {
       if (err) {
         results = []
@@ -23,7 +21,7 @@ exports.showSearchResults = function (req, res) {
       req.session.total = results.length;
       req.session.query = title;
     });
-  };
+  }
 
   Literature.findByTitle(title, page, pageSize, function (err, results) {
     var endTime = new Date()
@@ -49,6 +47,25 @@ exports.showSearchResults = function (req, res) {
 
 exports.showComplexSearchResults = function (res, req) {
   var condition = {
+    // allWords: req.query.allWords,
+    // exactPhrase: req.query.exactPhrase,
+    // oneWords: req.query.oneWords,
+    // withoutWords: req.query.withoutWords,
+    // authors: req.query.authors,
+    // publications: req.query.publications,
+    // lYear: req.query.lYear,
+    // rYear: req.query.rYear
+  } //,
+  // startTime = new Date()
+  //   .getTime(),
+  // page = req.query.p ? parseInt(req.query.p) : 1,
+  // pageSize = 10;
+
+
+  // if (req.query.allWords === undefined) {
+  //   condition = req.session.condition;
+  // };
+  condition = {
     allWords: 'per',
     exactPhrase: 'cloud',
     oneWords: 'of',
@@ -58,9 +75,13 @@ exports.showComplexSearchResults = function (res, req) {
     lYear: 2000,
     rYear: 2012
   };
+
   Literature.findAll(condition, function (err, results) {
     results.forEach(function (result, index) {
       console.log(result.title);
+      if (err) {
+        results = [];
+      };
     });
   });
 }
