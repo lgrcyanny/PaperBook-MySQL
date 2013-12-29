@@ -75,9 +75,9 @@ module.exports = {
       oneWords = condition.oneWords.split(' '),
       withoutWords = condition.withoutWords.split(' '),
       authors = condition.authors.split(' '),
-      publications = condition.publications.split(' '),
-      lYear = condition.lYear,
-      rYear = condition.rYear;
+      publications = condition.publications.split(' ');
+    // lYear = condition.lYear,
+    // rYear = condition.rYear;
 
     console.log('allWords:', allWords);
     console.log('exactPhrase:', exactPhrase);
@@ -85,7 +85,7 @@ module.exports = {
     console.log('withoutWords:', withoutWords);
     console.log('authors:', authors);
     console.log('publications:', publications);
-    console.log('year:' + lYear + '-' + rYear);
+    // console.log('year:' + lYear + '-' + rYear);
 
     //search expressions
     var allWordsExpr = squel.expr(),
@@ -93,7 +93,7 @@ module.exports = {
       withoutWordsExpr = squel.expr(),
       authorsExpr = squel.expr(),
       publicationsExpr = squel.expr(),
-      yearExpr = squel.expr(),
+      // yearExpr = squel.expr(),
       query = squel.select()
         .from('literatures');
 
@@ -112,16 +112,19 @@ module.exports = {
     publications.forEach(function (word, index) {
       publicationsExpr = publicationsExpr.or("publication like '%" + word + "%'");
     });
-    yearExpr = yearExpr.and("year >=" + lYear)
-      .and("year <=" + rYear);
+    // yearExpr = yearExpr.and("year >=" + lYear)
+    //   .and("year <=" + rYear);
 
     query = query.where(allWordsExpr)
       .where("title like '%" + exactPhrase + "%'")
       .where(oneWordsExpr)
-      .where(withoutWordsExpr)
+      // .where(withoutWordsExpr)
       .where(authorsExpr)
-      .where(publicationsExpr)
-      .where(yearExpr);
+      .where(publicationsExpr);
+    // .where(yearExpr);
+    if (condition.withoutWords!=''){
+      query=query.where(withoutWordsExpr);
+    }
     console.log(query.toString());
 
     utils.exec(query.toString(), null, function (err, results) {

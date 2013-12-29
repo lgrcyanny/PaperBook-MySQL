@@ -1,0 +1,18 @@
+<div class="row">
+  <div id="resultsPanel" class="col-md-6 col-md-offset-1">
+    <div id="resultStats">
+      <small>About <%= total %> results (<%= time %> seconds) </small>
+    </div>
+    <div id="searchResults">
+      <ul class="list-unstyled">
+        <% for (var i = 0; i < results.length; i++) { %>
+        <li>
+          <h4><a href="/literatures/detail/<%=results[i].id %>"><%= results[i].title %></a></h4>
+          <p>
+            <%= results[i].abstract.length > 800 ? results[i].abstract.substr(0, 800) + '...' : results[i].abstract %>
+          </p>
+        </li>
+        <% } %>
+      </ul>
+  </div>
+</div>

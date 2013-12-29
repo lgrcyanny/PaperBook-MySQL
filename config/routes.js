@@ -45,10 +45,11 @@ module.exports = function (app, passport) {
 
   // search route
   app.get('/search/results', search.showSearchResults);
-  app.get('/complexsearch/results',search.showComplexSearchResults);
+  app.get('/advancedsearch/results',search.showAdvancedSearchResults);
 
   //Statistics route
   app.get('/statistics',statistics.globalView);
+  app.get('/statistics/globalViewData',statistics.getGlobalViewData);
 
   // Literature upload route
   app.post('/literatures', literatures.create);
