@@ -11,7 +11,7 @@ exports.getGlobalViewData = function (req, res) {
   Statistics.getGlobalViewData(function (data) {
     res.send({
       success: true,
-      data: data
+      results: data
     });
   })
 }

@@ -13,7 +13,7 @@ exports.showSearchResults = function (req, res) {
     page = req.query.p ? parseInt(req.query.p) : 1,
     pageSize = 10;
 
-  if (!req.query.query) {
+  if (!(req.query.query === undefined)) {
     Literature.findAllByTitle(title, function (err, results) {
       if (err) {
         results = []
@@ -33,7 +33,7 @@ exports.showSearchResults = function (req, res) {
     };
 
     res.render('search/results', {
-      title: 'results:',
+      title: 'Results',
       page: page,
       total: total,
       time: (endTime - startTime) / 1000,
