@@ -10,11 +10,33 @@ $(function () {
     },
     success: function (res) {
       if (res.success) {
-        res.results.forEach(function (record, index) {
-          highchartsData.push([record.username, record.literature_count]);
-        })
+        
+        while (res.results[0].add_year === null) {
+          res.results.shift();
+        }
 
-        console.log('data:' + highchartsData);
+        var year = res.results[0].add_year,
+          index = 0,
+          temp = [];
+        res.results.forEach(function (result) {
+          var result_year = result.add_year;
+          if (year != result_year) {
+            highchartsData.push({
+              'index': index,
+              'name': 'Year ' + year,
+              'data': temp
+            });
+            year = result_year;
+            temp = [];
+          };
+          //console.log('result:' + result.add_year + ' ' + result.username + ' ' + result.literature_count);
+          temp.push([result.username, result.literature_count]);
+        })
+        highchartsData.push({
+          'index': index,
+          'name': 'Year ' + year,
+          'data': temp
+        });
 
         $('div#container')
           .highcharts({
@@ -36,11 +58,7 @@ $(function () {
             "xAxis": {
               "type": "category"
             },
-            "series": [{
-              "index": 0,
-              "name": "Year 2013",
-              "data": highchartsData
-            }]
+            "series": highchartsData
           });
       }
     }
