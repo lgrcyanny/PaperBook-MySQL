@@ -22,11 +22,7 @@ $(function () {
       });
     },
 
-    addRateListener: function () {
-
-    },
-
-    sendRateRequest: function (rate) {
+    initRateStar: function () {
 
     }
   }
