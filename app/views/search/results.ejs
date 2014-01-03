@@ -1,4 +1,4 @@
-<% layout('../layouts/default.ejs') -%>
+<% layout('../layouts/default.ejs')  -%>
 <div class="row">
   <div id="resultsPanel" class="col-md-6 col-md-offset-1">
     <div id="resultStats">
@@ -16,7 +16,7 @@
         <% } %>
       </ul>
       <ul class="pagination">
-        <!-- first page -->
+
         <% if (isFirstPage) { %>
           <li class="disabled"><a href="#">&laquo;</a></li>
         <% } else{ %>
@@ -31,7 +31,6 @@
           <% }; %>
         <% }; %>
 
-        <!-- last page -->
         <% if (isLastPage) { %>
           <li class="disabled"><a href="#">&raquo;</a></li>
         <% } else{ %>

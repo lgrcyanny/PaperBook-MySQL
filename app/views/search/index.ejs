@@ -1,4 +1,6 @@
 <% layout('../layouts/default.ejs')  -%>
+<% script('/js/ad-search.js') -%>
+
 <div class="search-box row">
   <div id="logo">
     <img src="/img/logo.jpg" class="col-md-9 col-md-offset-1">
@@ -24,37 +26,37 @@
               <dl class="dl-horizontal ad-search-list">
                 <div class="ad-search-entry">
                   <dt>with all of the words</dt>
-                  <dd><input type="text"></dd>
+                  <dd><input type="text" id="allWords"></dd>
                 </div>
                 <div class="ad-search-entry">
                   <dt>with the exact phrase</dt>
-                  <dd><input type="text"></dd>
+                  <dd><input type="text" id="exactPhrase"></dd>
                 </div>
                 <div class="ad-search-entry">
                   <dt>with at least one of the words</dt>
-                  <dd><input type="text"></dd>
+                  <dd><input type="text" id="oneWords"></dd>
                 </div>
-                <div class="ad-search-entry">
+                <!-- <div class="ad-search-entry">
                   <dt>with at least one of the words</dt>
                   <dd><input type="text"></dd>
-                </div>
+                </div> -->
                 <div class="ad-search-entry">
                   <dt>without the words</dt>
-                  <dd><input type="text"></dd>
+                  <dd><input type="text" id="withoutWords"></dd>
                 </div>
                 <div class="ad-search-entry">
                   <dt>Return articles authored by</dt>
-                  <dd><input type="text" placeholder="e.g., PJ Hayes or McCarthy"></dd>
+                  <dd><input type="text" id="authors" placeholder="e.g., PJ Hayes or McCarthy"></dd>
                 </div>
                 <div class="ad-search-entry">
                   <dt>Return articles published in</dt>
-                  <dd><input type="text" placeholder="e.g., J Biol Chem or Nature"></dd>
+                  <dd><input type="text" id="publications" placeholder="e.g., J Biol Chem or Nature"></dd>
                 </div>
               </dl>
             </form>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-search"></span></button>
+            <button class="btn btn-danger" id="ad-search-submit"><span class="glyphicon glyphicon-search"></span></button>
           </div>
         </div>
       </div>

@@ -14,7 +14,7 @@ var admin = require('../app/controllers/admin');
 var auth = require('./middlewares/authorization');
 var literatures = require('../app/controllers/literatures');
 var richComments = require('../app/controllers/rich-comments');
-
+var statistics = require('../app/controllers/statistics');
 
 /**
  * Expose routes
@@ -45,6 +45,11 @@ module.exports = function (app, passport) {
 
   // search route
   app.get('/search/results', search.showSearchResults);
+  app.get('/advancedsearch/results',search.showAdvancedSearchResults);
+
+  //Statistics route
+  app.get('/statistics',statistics.globalView);
+  app.get('/statistics/globalViewData',statistics.getGlobalViewData);
 
   // Literature upload route
   app.post('/literatures', literatures.create);
