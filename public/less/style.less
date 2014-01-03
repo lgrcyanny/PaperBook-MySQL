@@ -95,8 +95,12 @@ div#literature-meta span.file-download-btn img{
   cursor: pointer;
 }
 
-div#literature-rating .glyphicon {
+div.rating-input span.glyphicon{
   cursor: pointer;
+  color: #FF9900;
+}
+
+.glyphicon-star, .glyphicon-star-empty {
   color: #FF9900;
 }
 
@@ -137,5 +141,26 @@ div#admin-config {
   span.glyphicon {
     color: #08c;
     cursor: pointer;
+  }
+}
+
+/**
+ * rich-comment-modal.ejs
+ */
+#rich-comment-modal div.rating-input {
+  margin-left: 60px;
+}
+
+#rich-comments-list-accordion {
+  .panel-title {
+    a {
+      text-decoration: none;
+      small, span {
+        padding-left: 5px;
+      }
+      &:hover {
+        text-decoration: none;
+      }
+    }
   }
 }

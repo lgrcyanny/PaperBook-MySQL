@@ -1,4 +1,5 @@
 var richCommentModel = require('../models/rich-comment');
+var literatureModel = require('../models/literature');
 var moment = require('moment');
 
 exports.fetchDraft = function (req, res) {
@@ -71,7 +72,7 @@ exports.saveDraft = function (req, res) {
 /**
  * param: comment
  */
-exports.publish = function (req, res) {
+exports.publish = function (req, res, next) {
   if (!req.user) {
     res.send({
       success: false,
@@ -83,8 +84,15 @@ exports.publish = function (req, res) {
   comment.user_id = req.user.id;
   var commentId = comment.id ? comment.id : null;
   delete comment['id'];
-  //console.log(comment);
-  handleCommentDBSave(comment, commentId, res);
+  literatureModel.updateForComment(comment.literature_id, comment.score, comment.tags, function (err, results) {
+    if (err) {
+      res.send({
+        success: false,
+        error: 'Update literature score and tags error'
+      })
+    }
+    handleCommentDBSave(comment, commentId, res);
+  });
 }
 
 /**

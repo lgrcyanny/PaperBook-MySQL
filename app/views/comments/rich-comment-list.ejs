@@ -7,7 +7,19 @@
       <h4 class="panel-title">
         <a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#collapse-<%=comment.id %>">
           <%=comment.content.Title ? comment.content.Title : 'No Title Yet! ' %>
-          <small><%=comment.username + ' ' %></small> <small><%=comment.created_at %></small>
+          <small><%=comment.username + ' ' %></small> 
+          <small><%=comment.created_at %></small>
+          <span>
+            <% if (comment.score > 0) { %>
+              <% var score = Math.floor(comment.score); %>
+              <% for (var k = 0; k < score; k++) {%>
+                 <i class='glyphicon glyphicon-star'></i>
+              <% } %>
+              <% for (var k = 0; k < (5 - score); k++) { %>
+                 <i class='glyphicon glyphicon-star-empty'></i>
+              <% } %>
+            <% } %>
+          </span>
         </a>
       </h4>
     </div>

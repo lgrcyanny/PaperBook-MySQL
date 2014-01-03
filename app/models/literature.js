@@ -133,5 +133,39 @@ module.exports = {
       };
       callback(null, results);
     });
+  },
+
+  /**
+   * When make rich comment and brief comment, should update tags and score
+   */
+  updateForComment: function (literatureId, score, tags, cb) {
+    var query = 'SELECT score_avg, score_count, tags FROM ?? WHERE id = ?';
+    var data = ['literatures', literatureId];
+    utils.exec(query, data, function (err, results) {
+      if (err) {
+        cb(err);
+      }
+      var literature = results[0];
+      score = parseInt(score);
+      if (score > 0) {
+        var scoreAvg = parseInt(literature.score_avg);
+        var scoreCount = parseInt(literature.score_count);
+        scoreAvg = ((scoreAvg * scoreCount) + score) / (scoreCount + 1);
+        scoreAvg = scoreAvg.toPrecision(2);
+        literature.score_avg = scoreAvg;
+        literature.score_count = scoreCount + 1;
+      }
+
+      if (tags.length > 0) {
+        literature.tags = literature.tags ? (literature.tags + ',' + tags) : tags;
+      }
+
+      if (score === 0 && tag.length === 0) {
+        cb(null);
+      }
+
+      query = 'UPDATE literatures SET ? WHERE id = ' + literatureId;
+      utils.exec(query, literature, cb);
+    });
   }
 }

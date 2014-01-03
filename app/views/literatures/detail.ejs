@@ -4,7 +4,6 @@
 <% script('/js/literature-brief-comment.js') -%>
 <% script('/js/literature-rich-comment.js') -%>
 
-
 <div class="row">
   <div class="col-md-8">
     <div class="row">
@@ -60,11 +59,11 @@
         <%=literature.score_avg %>
         <% } %>
         <p><%=literature.score_avg ? literature.score_count : 0 %> people rated</p>
-        <br><br>
-        <h5>Make Your rating</h5>
-        <input type="number" data-max="5" data-min="1" value="0"  id="literature-rate-star" class="rating" />
       </div>
     </div>
+    <br>
+    <br>
+
     <ul class="nav nav-tabs">
       <li class="active"><a href="#abstract" data-toggle="tab">Abstract</a></li>
       <li><a href="#references" data-toggle="tab">References</a></li>

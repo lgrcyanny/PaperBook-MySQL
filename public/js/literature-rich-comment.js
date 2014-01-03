@@ -15,7 +15,7 @@ $(function () {
         url: self.rootUrl + '/literatures/detail/comments/rich/draft',
         type: 'GET',
         data: {
-          literatureId: $('input#literature-id').val()
+          literatureId: self.literatureId
         },
         success: function (res) {
           if (res.success) {
@@ -37,7 +37,7 @@ $(function () {
         url: self.rootUrl + '/literatures/detail/comments/rich',
         type: 'GET',
         data: {
-          literatureId: $('input#literature-id').val()
+          literatureId: self.literatureId
         },
         success: function (res) {
           if (res.success) {
@@ -89,6 +89,7 @@ $(function () {
     sendPublishRequest: function () {
       var self = this;
       var comment = this.handleForm();
+      console.log(comment);
       $.ajax({
         url: self.rootUrl + '/literatures/detail/comments/rich',
         type: 'POST',
@@ -120,6 +121,8 @@ $(function () {
       var content = {};
       content.Title = $('#rich-comment-modal input#Title').val().trim();
       comment.id = $('input#rich-comment-draft-id').val() ? $('input#rich-comment-draft-id').val() : null;
+      comment.score = $('#rich-comment-modal input#Rate').val();
+      comment.tags = $('#rich-comment-modal input#Tags').val().trim().split(',').join(',');
       comment.literature_id = this.literatureId;
       $('#rich-comment-modal form textarea').each(function () {
         var value = $(this).val().trim();
