@@ -45,7 +45,10 @@ $(function () {
             var tagsHTML = new EJS({url: '/comments/tags-backup.ejs'}).render({
               tags: tags
             });
-            console.log(tagsHTML);
+           // console.log(tagsHTML);
+            if ($('div.modal div.modal-body div.tags-info div.tags-backup-content')) {
+              $('div.modal div.modal-body div.tags-info div.tags-backup-content').remove();
+            }
             $('div.modal div.modal-body div.tags-info').append(tagsHTML);
             self.addTagsBackupInfoListener();
           }

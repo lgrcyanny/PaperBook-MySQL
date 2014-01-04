@@ -118,6 +118,10 @@ $(function () {
 
             //console.log(commentItemHTML);
             $('#brief-comment-modal').modal('hide');
+            // update tags backup info on th modal
+            window.commentTags.init();
+
+            // Update brief comment list
             $('#brief-comments-list ul').prepend(commentItemHTML);
           } else {
             var alertErrorHTML = new EJS({url: '/alerts/alert-error.ejs'}).render({

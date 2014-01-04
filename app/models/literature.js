@@ -137,7 +137,8 @@ module.exports = {
   },
 
   /**
-   * When make rich comment and brief comment, should update tags and score
+   * When make rich comment and brief comment, should update tags and score for 
+   * literature
    */
   updateForComment: function (literatureId, score, tags, cb) {
     var query = 'SELECT score_avg, score_count, tags FROM ?? WHERE id = ?';
@@ -157,12 +158,23 @@ module.exports = {
       }
 
       if (tags.length > 0) {
-        var literatureTagsArr = literature.tags.toLowerCase().split(',');
-        var newTagsArr = tags.toLowerCase().split(',');
-        literatureTagsArr = _.union(literatureTagsArr, newTagsArr);
-        literatureTagsArr = _.uniq(literatureTagsArr);
-        literatureTagsArr = _.without(literatureTagsArr, '');
-        literature.tags = literatureTagsArr.join(',');
+          var newTagsArr = tags.toLowerCase().split(',');
+          newTagsArr = _.map(newTagsArr, function (item) {
+            return item.trim();
+          })
+          newTagsArr = _.without(newTagsArr, '');
+        if (literature.tags) {
+          var literatureTagsArr = literature.tags.toLowerCase().split(',');
+          literatureTagsArr = _.map(literatureTagsArr, function (item) {
+            return item.trim();
+          });
+          literatureTagsArr = _.without(literatureTagsArr, '');
+          literatureTagsArr = _.union(literatureTagsArr, newTagsArr);
+          literatureTagsArr = _.uniq(literatureTagsArr, false);
+          literature.tags = literatureTagsArr.join(',');
+        } else {
+          literature.tags = newTagsArr.join(',');
+        }
       }
 
       if (score === 0 && tags.length === 0) {

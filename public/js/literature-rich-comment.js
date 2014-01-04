@@ -120,6 +120,10 @@ $(function () {
 
             //console.log(commentItemHTML);
             $('#rich-comment-modal').modal('hide');
+            // update tags backup info on th modal
+            window.commentTags.init();
+
+            // Update rich comment list
             $('#rich-comments-list-accordion .panel-collapse').removeClass('in').addClass('collapse');
             $('#rich-comments-list-accordion').prepend(commentItemHTML);
           } else {
