@@ -14,6 +14,7 @@ var admin = require('../app/controllers/admin');
 var auth = require('./middlewares/authorization');
 var literatures = require('../app/controllers/literatures');
 var richComments = require('../app/controllers/rich-comments');
+var briefComments = require('../app/controllers/brief-comments');
 var statistics = require('../app/controllers/statistics');
 
 /**
@@ -68,9 +69,9 @@ module.exports = function (app, passport) {
   app.post('/literatures/remove/:removeId', literatures.remove);
 
   // Literature detail route
+  app.get('/literatures/detail/tags', literatures.fetchTags);
   app.get('/literatures/detail/cited', literatures.fetchCited);
   app.get('/literatures/detail/:literatureId', literatures.showDetailPage);
-
 
   app.param('literatureId', literatures.fetchById);
 
@@ -84,4 +85,10 @@ module.exports = function (app, passport) {
   app.get('/literatures/detail/comments/rich', richComments.fetchComments);
   app.post('/literatures/detail/comments/rich/draft', richComments.saveDraft);
   app.post('/literatures/detail/comments/rich', richComments.publish);
+
+  // Brief comment route
+  app.get('/literatures/detail/comments/brief/draft', briefComments.fetchDraft);
+  app.get('/literatures/detail/comments/brief', briefComments.fetchComments);
+  app.post('/literatures/detail/comments/brief/draft', briefComments.saveDraft);
+  app.post('/literatures/detail/comments/brief', briefComments.publish);
 }

@@ -1,18 +1,21 @@
 <% layout('../layouts/default') -%>
 <% script('/js/literature-detail.js') -%>
-<% script('/js/temp.js') -%>
 <% script('/js/literature-brief-comment.js') -%>
 <% script('/js/literature-rich-comment.js') -%>
+<% script('/js/literature-comment-tags.js') -%>
 
 <div class="row">
-  <div class="col-md-8">
+  <div class="col-md-12 clearfix">
+    <!--Literature Meta Info-->
     <div class="row">
       <input type="hidden" id="literature-id" value="<%=literature.id %>"/>
-      <h3><%=literature.title ? literature.title: '' %></h3>
+      <div class="col-md-12 clearfix">
+        <h3><%=literature.title ? literature.title: '' %></h3>
+      </div>
       <div class="col-md-2">
         <img src="/img/paper.jpg" alt="160x160" class="img-thumbnail">
       </div>
-      <div id="literature-meta" class="col-md-6">
+      <div id="literature-meta" class="col-md-7">
         <dl>
           <dt>Year:</dt>
           <dd><%=literature.year %></dd>
@@ -28,13 +31,13 @@
           <% if (literature.accessories && literature.accessories.length) { %>
           <dt>Accessories</dt>
           <dd>
-              <% var exextensions=['pdf', 'doc', 'docx', 'ppt', 'pptx', 'rar', 'zip']; %>
+              <% var extensions=['doc', 'pdf', 'docx', 'ppt', 'pptx', 'rar', 'zip']; %>
               <% var types=['image', 'audio', 'video']; %>
               <% for (var i = 0; i < literature.accessories.length; i++) { %>
                 <% var accessory = literature.accessories[i];
                    var fileicon = 'file';
-                   if (exextensions.indexOf(accessory.exextension) >= 0) {
-                    fileicon = accessory.exextension;
+                   if (extensions.indexOf(accessory.extension) >= 0) {
+                    fileicon = accessory.extension;
                    } else if (types.indexOf(accessory.type) >= 0) {
                     fileicon = accessory.type;
                    }
@@ -46,7 +49,7 @@
         </dl>
       </div>
 
-      <div id="literature-rating" class="col-md-4">
+      <div id="literature-rating" class="col-md-3">
         <h5>Rating</h5>
         <span id="literature-rating-star">
           <% if (literature.score_avg) { %>
@@ -57,7 +60,7 @@
           <% for (var i = 0; i < (5 - score); i++) { %>
              <i class='glyphicon glyphicon-star-empty'></i>
           <% } %>
-          <%=literature.score_avg %>
+          <%=literature.score_avg.toPrecision(2) %>
           <% } %>
           <p><%=literature.score_count ? literature.score_count : 0 %> people rated</p>
         <span>
@@ -160,41 +163,15 @@
     </div>
   </div>
 
-  <div id="brief-comments" class="col-md-4">
-    <h3>Brief Conments</h3>
-    <ul class="list-unstyled" id="brief-list">
-      <li class="">
-        <a href="#" class="">
-          Cyanny LIANG
-        </a>
-        <p class="">It's really good about cloud computing!</p>
-      </li>
-      <li class="">
-        <a href="#" class="">
-          Arron FENG
-        </a>
-        <p class="">It's really Bad paper! Dont know what it is sayins.</p>
-      </li>
-      <li class="">
-        <a href="#" class="">
-          Thomas ZHANG
-        </a>
-        <p class="">It's just OK. There's some other paper explains things better.</p>
-      </li class="">
-      <li>
-        <a href="#" class="">
-          Smone Else
-        </a>
-        <p class="">lalala, love this paper lalala~</p>
-      </li>
-    </ul>
-    <div>
-      <textarea class="form-control" rows="3" id="brief-comment-area" placeholder="Add your brief comment here..."></textarea>
-      <div class="pull-right">
-        <a href="#" class="btn">Save Draft</a>
-        <button type="button" class="btn btn-success" id="brief-submit" onclick="displayDate()">Submit</button>
-      </div>
-    </div>
+</div>
+
+<div id="brief-comments">
+  <button class="btn btn-success pull-right" data-toggle="modal" data-target="#brief-comment-modal">Add brief comment</button>
+
+  <h3>Brief Comments</h3>
+  <hr>
+  <div id="brief-comments-list">
+
   </div>
 </div>
 
@@ -203,6 +180,7 @@
   <button class="btn btn-success pull-right" data-toggle="modal" data-target="#rich-comment-modal">Add detail comment</button>
 
   <h3>Detail Comments</h3>
+  <hr>
   <div id="rich-comments-list">
   </div>
 </div>

@@ -227,11 +227,31 @@ exports.fetchCited = function (req, res) {
   var id = req.query.id;
   referenceModel.findByCited(id, function (err, results) {
     if (err) {
-      throw err;
+      res.send({
+        success: false,
+        error: err
+      });
     }
     res.send({
       success: true,
       results: results
+    });
+  })
+}
+
+exports.fetchTags = function (req, res) {
+  var id = req.query.literatureId;
+  literatureModel.findTags(id, function (err, results) {
+    if (err) {
+      res.send({
+        success: false,
+        error: err
+      });
+    }
+    var literature = results[0];
+    res.send({
+      success: true,
+      tags: literature.tags
     });
   })
 }

@@ -121,9 +121,9 @@ div#admin-config span.glyphicon {
   cursor: pointer;
 }
 /**
- * rich-comment-modal.ejs
+ * rich-comment-modal.ejs and brief-comment-modal.ejs
  */
-#rich-comment-modal div.rating-input {
+div.rating-input {
   margin-left: 60px;
 }
 #rich-comments-list-accordion .panel-title a {
@@ -135,4 +135,36 @@ div#admin-config span.glyphicon {
 }
 #rich-comments-list-accordion .panel-title a:hover {
   text-decoration: none;
+}
+div#brief-comments-list ul li {
+  padding-bottom: 5px;
+  padding-top: 10px;
+  border-bottom: 1px #d3d3d3 dotted;
+}
+div#brief-comments-list ul li span.userinfo {
+  display: block;
+  clear: both;
+  padding-bottom: 5px;
+}
+div#brief-comments-list ul li span.userinfo span.username {
+  color: #08c;
+}
+div#brief-comments-list ul li span.userinfo small,
+div#brief-comments-list ul li span.userinfo span {
+  padding-left: 5px;
+}
+div#brief-comments-list ul li p {
+  margin-left: 5px;
+}
+/**
+ * brief comments and rich comments
+ */
+.modal div.tags-backup-content {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.modal div.tags-backup-content span.badge {
+  background-color: rgba(92, 184, 92, 0.9);
+  font-weight: normal;
+  cursor: pointer;
 }
