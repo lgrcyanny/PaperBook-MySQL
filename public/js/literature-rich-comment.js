@@ -102,7 +102,23 @@ $(function () {
             var commentItemHTML = new EJS({url: '/comments/rich-comment-item.ejs'}).render({
               comment: res.comment
             });
-            console.log(commentItemHTML);
+            var rateInfoHTML = new EJS({url: '/literatures/rate-info.ejs'}).render({
+              scoreAvg: res.scoreAvg,
+              scoreCount: res.scoreCount
+            });
+
+            var tagsInfoHTML = new EJS({url: '/literatures/tags-info.ejs'}).render({
+              tags: res.tags
+            });
+
+            //Update rate info on detail page
+            $('div#literature-rating span#literature-rating-star').remove();
+            $('div#literature-rating').append(rateInfoHTML);
+
+            // Update tags info
+            $('div.tab-content div#tags').empty().append(tagsInfoHTML);
+
+            //console.log(commentItemHTML);
             $('#rich-comment-modal').modal('hide');
             $('#rich-comments-list-accordion .panel-collapse').removeClass('in').addClass('collapse');
             $('#rich-comments-list-accordion').prepend(commentItemHTML);

@@ -66,7 +66,15 @@ exports.saveDraft = function (req, res) {
   comment.user_id = req.user.id;
   var commentId = comment.id ? comment.id : null;
   delete comment['id'];
-  handleCommentDBSave(comment, commentId, res);
+  handleCommentDBSave(comment, commentId, function (err, commentId) {
+    if (err) {
+      res.send({
+        success: false,
+        error: err
+      });
+    }
+    sendResponse(commentId, res, null);
+  });
 }
 
 /**
@@ -84,71 +92,73 @@ exports.publish = function (req, res, next) {
   comment.user_id = req.user.id;
   var commentId = comment.id ? comment.id : null;
   delete comment['id'];
-  literatureModel.updateForComment(comment.literature_id, comment.score, comment.tags, function (err, results) {
+  handleCommentDBSave(comment, commentId, function (err, commentId) {
     if (err) {
       res.send({
         success: false,
-        error: 'Update literature score and tags error'
-      })
+        error: err
+      });
     }
-    handleCommentDBSave(comment, commentId, res);
-  });
+    literatureModel.updateForComment(comment.literature_id, comment.score, comment.tags, function (err, literature) {
+      if (err) {
+        res.send({
+          success: false,
+          error: 'Update literature score and tags error'
+        })
+      }
+      sendResponse(commentId, res, literature);
+    });
+  })
 }
 
 /**
  * Private Functions
  */
-var handleCommentDBSave = function (data, commentId, res) {
+var handleCommentDBSave = function (data, commentId, cb) {
   if (commentId) {
     // The record is already in db
     richCommentModel.updateById(commentId, data, function (err) {
       if (err) {
-        res.send({
-          success: false,
-          error: err
-        });
+        cb(err);
       }
-      richCommentModel.findById(commentId, function (err, results) {
-        if (err) {
-          res.send({
-            success: false,
-            error: err
-          });
-        }
-        var comment = results[0];
-        comment.content = JSON.parse(comment.content);
-        comment.created_at = moment(comment.created_at).format('YYYY-MM-DD HH:mm:ss');
-        res.send({
-          success: true,
-          comment: comment
-        });
-      })
+      cb(null, commentId);
     });
   } else {
     // The record isn't in db
     richCommentModel.save(data, function (err, saveRes) {
       if (err) {
-        res.send({
-          success: false,
-          error: err
-        });
+        cb(err);
       }
-      richCommentModel.findById(saveRes.insertId, function (err, results) {
-        if (err) {
-          res.send({
-            success: false,
-            error: err
-          });
-        }
-        var comment = results[0];
-        comment.content = JSON.parse(comment.content);
-        comment.created_at = moment(comment.created_at).format('YYYY-MM-DD HH:mm:ss');
-        res.send({
-          success: true,
-          comment: comment
-        });
-      })
+      cb(null, saveRes.insertId);
     });
   }
+}
+
+var sendResponse = function (commentId, res, literature) {
+  richCommentModel.findById(commentId, function (err, results) {
+    if (err) {
+      res.send({
+        success: false,
+        error: err
+      });
+    }
+    var comment = results[0];
+    comment.content = JSON.parse(comment.content);
+    comment.created_at = moment(comment.created_at).format('YYYY-MM-DD HH:mm:ss');
+    if (literature) {
+      res.send({
+        success: true,
+        comment: comment,
+        scoreAvg: literature.score_avg,
+        scoreCount: literature.score_count,
+        tags: literature.tags
+      });
+    } else {
+      res.send({
+        success: true,
+        comment: comment
+      });
+    }
+  });
 }
 
