@@ -1,0 +1,36 @@
+<script type="text/javascript" src="/lib/bootstrap/js/bootstrap-rating-input.min.js"></script>
+<!--Needs two parameters: briefCommentType and comment-->
+<div class="modal fade" id="brief-comment-modal" tabindex="-1" role="dialog" aria-labelledby="brief-comment-modal-label" aria-hidden="true" data-backdrop="false">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="brief-comment-modal-label">Make Brief Comment</h4>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="brief-comment-draft-id" value="<%= comment ? comment.id : '' %>" />
+        <form role="form">
+          <div class="form-group">
+            <label for="Rate" class="col-md-1 control-label">Rate</label>
+            <input  type="number" data-max="5" data-min="1" value="<%=comment ? (comment.score ? comment.score : 0) : 0 %>"  id="rate" class="form-control rating" />
+          </div>
+
+          <div class="form-group tags-info">
+            <label for="Tags" class="col-md-1 control-label">Tags</label>
+            <input type="text" class="form-control tags-typeahead" id="tags" placeholder="Split tags with one comma" value="<%=comment ? (comment.tags ? comment.tags : '') : '' %>">
+          </div>
+
+          <div class="form-group">
+            <label for="Content" class="col-md-1 control-label">Content</label>
+            <textarea class="form-control" id="content"  rows="4" name="content" placeholder="Comment content"><%= comment ? (comment.content ? comment.content.trim() : '') : '' %></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" id="brief-comment-save-draft-btn" class="btn btn-default">Save Draft</button>
+        <button type="button" id="brief-comment-publish-btn" class="btn btn-success">Publish</button>
+      </div>
+    </div>
+  </div>
+</div>

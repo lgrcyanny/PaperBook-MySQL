@@ -1,0 +1,24 @@
+<!--Needs param: comments-->
+<ul class="list-unstyled">
+  <% for (var i = 0; i < comments.length; i++) { %>
+  <% var comment = comments[i]; %>
+  <li>
+    <span class="userinfo">
+      <span class="username"><%=comment.username %></span>
+      <small><%=comment.created_at %></small>
+      <span>
+        <% if (comment.score > 0) { %>
+          <% var score = Math.floor(comment.score); %>
+          <% for (var k = 0; k < score; k++) {%>
+             <i class='glyphicon glyphicon-star'></i>
+          <% } %>
+          <% for (var k = 0; k < (5 - score); k++) { %>
+             <i class='glyphicon glyphicon-star-empty'></i>
+          <% } %>
+        <% } %>
+      </span>
+    </span>
+    <p><%=comment.content %></p>
+  </li>
+  <% } %>
+</ul>

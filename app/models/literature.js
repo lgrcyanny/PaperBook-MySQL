@@ -1,5 +1,6 @@
 var utils = require('../../lib/utils');
 var squel = require('squel');
+var _ = require('underscore');
 
 module.exports = {
   table: 'literatures',
@@ -156,7 +157,12 @@ module.exports = {
       }
 
       if (tags.length > 0) {
-        literature.tags = literature.tags ? (literature.tags + ',' + tags) : tags;
+        var literatureTagsArr = literature.tags.toLowerCase().split(',');
+        var newTagsArr = tags.toLowerCase().split(',');
+        literatureTagsArr = _.union(literatureTagsArr, newTagsArr);
+        literatureTagsArr = _.uniq(literatureTagsArr);
+        literatureTagsArr = _.without(literatureTagsArr, '');
+        literature.tags = literatureTagsArr.join(',');
       }
 
       if (score === 0 && tags.length === 0) {
@@ -172,5 +178,11 @@ module.exports = {
         cb(null, literature);
       });
     });
+  },
+
+  findTags: function (literatureId, cb) {
+    var query = 'SELECT tags FROM ?? WHERE id = ?';
+    var data = [this.table, literatureId];
+    utils.exec(query, data, cb);
   }
 }
