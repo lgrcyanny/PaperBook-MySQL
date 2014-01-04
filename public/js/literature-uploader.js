@@ -85,7 +85,7 @@ $(function () {
         success: function (res) {
           if (res.success) {
             //console.log(res);
-            window.location.href = self.rootUrl + '/myliterature'
+            window.location.href = self.rootUrl + '/literatures/detail/' + res.literatureId
           }
         }
       });

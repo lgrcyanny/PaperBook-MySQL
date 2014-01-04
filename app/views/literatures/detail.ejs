@@ -14,6 +14,10 @@
       </div>
       <div class="col-md-2">
         <img src="/img/paper.jpg" alt="160x160" class="img-thumbnail">
+        <br>
+        <div id="detail-edit-btn">
+          <a href="/literatures/update/<%=literature.id %>">Edit <span class="glyphicon glyphicon-pencil "></span></a>
+        </div>
       </div>
       <div id="literature-meta" class="col-md-7">
         <dl>
@@ -25,7 +29,7 @@
 
           <% if (literature.file && literature.file.name) { %>
           <dt>Full Text</dt>
-          <dd><span title="<%=literature.file.name + ' (' + literature.file.size + ')' %>" class="file-download-btn" title="download" data-url="<%=literature.file.path %>"><img src="/img/pdf.png" alt="pdf"></span></dd>
+          <dd><span title="<%=literature.file.name + ' (' + literature.file.size + ')' %>" class="file-download-btn" title="download" data-filepath="<%=literature.file.path %>"><img src="/img/pdf.png" alt="pdf"></span></dd>
           <% } %>
 
           <% if (literature.accessories && literature.accessories.length) { %>
@@ -42,7 +46,7 @@
                     fileicon = accessory.type;
                    }
                 %>
-                  <span  title="<%=accessory.name + ' (' + accessory.size + ')' %>" class="file-download-btn" data-url="<%=accessory.path %>"><img src="/img/<%=fileicon %>.png"></span>
+                  <span  title="<%=accessory.name + ' (' + accessory.size + ')' %>" class="file-download-btn" data-filepath="<%=accessory.path %>"><img src="/img/<%=fileicon %>.png"></span>
               <% } %>
             <% } %>
           </dd>
