@@ -148,10 +148,9 @@ module.exports = {
       var literature = results[0];
       score = parseInt(score);
       if (score > 0) {
-        var scoreAvg = parseInt(literature.score_avg);
-        var scoreCount = parseInt(literature.score_count);
+        var scoreAvg = literature.score_avg;
+        var scoreCount = literature.score_count;
         scoreAvg = ((scoreAvg * scoreCount) + score) / (scoreCount + 1);
-        scoreAvg = scoreAvg.toPrecision(2);
         literature.score_avg = scoreAvg;
         literature.score_count = scoreCount + 1;
       }
@@ -160,12 +159,18 @@ module.exports = {
         literature.tags = literature.tags ? (literature.tags + ',' + tags) : tags;
       }
 
-      if (score === 0 && tag.length === 0) {
+      if (score === 0 && tags.length === 0) {
         cb(null);
       }
 
       query = 'UPDATE literatures SET ? WHERE id = ' + literatureId;
-      utils.exec(query, literature, cb);
+      utils.exec(query, literature, function (err, updateResult) {
+        if (err) {
+          cb(err);
+        }
+        literature.score_avg = literature.score_avg.toPrecision(2);
+        cb(null, literature);
+      });
     });
   }
 }

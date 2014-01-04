@@ -1,0 +1,13 @@
+<span id="literature-rating-star">
+    <% var score = parseInt(scoreAvg);  %>
+    <% if (score > 0) { %>
+        <% for (var i = 0; i < score; i++) {%>
+           <i class='glyphicon glyphicon-star'></i>
+        <% } %>
+        <% for (var i = 0; i < (5 - score); i++) { %>
+           <i class='glyphicon glyphicon-star-empty'></i>
+        <% } %>
+        <%=scoreAvg %>
+    <% } %>
+    <p><%=scoreCount > 0 ? scoreCount : 0 %> people rated</p>
+<span>
