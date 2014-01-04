@@ -71,6 +71,7 @@ module.exports = function (app, passport) {
   // Literature detail route
   app.get('/literatures/detail/tags', literatures.fetchTags);
   app.get('/literatures/detail/cited', literatures.fetchCited);
+  app.get('/literatures/detail/download', literatures.downloadFile);
   app.get('/literatures/detail/:literatureId', literatures.showDetailPage);
 
   app.param('literatureId', literatures.fetchById);

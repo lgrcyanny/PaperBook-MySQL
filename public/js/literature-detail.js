@@ -4,6 +4,7 @@ $(function () {
     rootUrl: 'http://' + window.location.hostname + ':' + window.location.port,
     init: function () {
       this.addCheckBoxListener();
+      this.addDownloadListener();
     },
 
     addCheckBoxListener: function () {
@@ -22,8 +23,17 @@ $(function () {
       });
     },
 
-    initRateStar: function () {
+    addDownloadListener: function () {
+      var self = this;
+      $('div#literature-meta dd span.file-download-btn').click(function () {
+        var filepath = $(this).attr('data-filepath');
+        var requestpath = self.rootUrl + '/literatures/detail/download?filepath=' + filepath;
 
+        // This is trick, since ajax cant handle download because of security limit
+        var link = document.createElement('a');
+        link.href = requestpath;
+        link.click();
+      });
     }
   }
   literatureDetail.init();

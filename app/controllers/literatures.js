@@ -114,7 +114,7 @@ exports.showUpdatePage = function (req, res, next) {
 exports.update = function (req, res, next) {
   var id = req.param('updateId');
   var literature = wrapLiteratureForDBSave(req.user.id, req.body.literature);
-  literatureModel.update (id, literature, function (err, result) {
+  literatureModel.update(id, literature, function (err, result) {
     if (err) {
       return next(err);
     }
@@ -127,7 +127,8 @@ exports.update = function (req, res, next) {
         var references = JSON.parse(literature.references);
           if (references.length === 0) {
             res.send({
-              success: true
+              success: true,
+              literatureId: id
             });
           } else {
             referenceModel.save(id, references, function (err, refSaveRes) {
@@ -136,7 +137,8 @@ exports.update = function (req, res, next) {
               }
               //console.log(refSaveRes);
               res.send({
-                success: true
+                success: true,
+                literatureId: id
               });
             });
           }
@@ -193,6 +195,12 @@ exports.removeFile = function (req, res) {
   });
 }
 
+exports.downloadFile = function (req, res) {
+  var filepath = req.query.filepath;
+  //console.log(filepath);
+  var filename = path.basename(filepath);
+  res.download(filepath);
+}
 
 exports.showMyLiteraturePage = function (req, res, next) {
   var userid = req.user.id;
