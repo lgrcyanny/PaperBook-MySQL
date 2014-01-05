@@ -5,3 +5,4 @@ Makefile
 uploads/*
 config/npm-debug.log
 public/lib/highcharts
+db/backup.sql
