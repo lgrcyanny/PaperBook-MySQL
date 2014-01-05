@@ -3,6 +3,9 @@
 <% script('/js/literature-brief-comment.js') -%>
 <% script('/js/literature-rich-comment.js') -%>
 <% script('/js/literature-comment-tags.js') -%>
+<% script('/lib/d3/d3.v3.min.js') -%>
+<% script('/js/literature-ref-graph.js') -%>
+
 <div class="col-md-10 col-md-offset-1">
   <div class="row">
     <div class="col-md-12 clearfix">
@@ -10,7 +13,7 @@
       <div class="row">
         <input type="hidden" id="literature-id" value="<%=literature.id %>"/>
         <div class="col-md-12 clearfix">
-          <h3><%=literature.title ? literature.title: '' %></h3>
+          <h3 id="literature-title"><%=literature.title ? literature.title: '' %></h3>
         </div>
         <div class="col-md-3">
           <img src="/img/paper.jpg" alt="160x160" class="img-thumbnail">
@@ -79,6 +82,7 @@
         <li><a href="#cited" data-toggle="tab">Cited By</a></li>
         <li><a href="#keywords" data-toggle="tab">Keywords</a></li>
         <li><a href="#tags" data-toggle="tab">Tags</a></li>
+        <li><a href="#ref-graph" data-toggle="tab">Ref Graph</a></li>
       </ul>
 
       <div class="tab-content" id="literature-detail-tab">
@@ -163,6 +167,12 @@
           </div>
           <br>
           <br>
+        </div>
+
+        <div class="tab-pane fade well" id="ref-graph">
+          <input type="hidden" id="ref-graph-references" value="<%=escape(JSON.stringify(literature.references)) %>"/>
+          <input type="hidden" id="ref-graph-cited" value="<%=escape(JSON.stringify(cited)) %>"/>
+
         </div>
       </div>
     </div>

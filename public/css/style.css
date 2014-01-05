@@ -107,6 +107,14 @@ div#detail-edit-btn {
   margin-left: auto;
   margin-right: auto;
 }
+.node {
+  stroke-width: 1.5px;
+  cursor: pointer;
+}
+.link {
+  stroke: #999;
+  stroke-opacity: .9;
+}
 /**
  * upload.ejs and update.ejs
  */
