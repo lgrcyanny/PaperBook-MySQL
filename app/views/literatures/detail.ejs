@@ -3,188 +3,189 @@
 <% script('/js/literature-brief-comment.js') -%>
 <% script('/js/literature-rich-comment.js') -%>
 <% script('/js/literature-comment-tags.js') -%>
-
-<div class="row">
-  <div class="clearfix">
-    <!--Literature Meta Info-->
-    <div class="row">
-      <input type="hidden" id="literature-id" value="<%=literature.id %>"/>
-      <div class="col-md-12 clearfix">
-        <h3><%=literature.title ? literature.title: '' %></h3>
-      </div>
-      <div class="col-md-2">
-        <img src="/img/paper.jpg" alt="160x160" class="img-thumbnail">
-        <br>
-        <div id="detail-edit-btn">
-          <a href="/literatures/update/<%=literature.id %>">Edit <span class="glyphicon glyphicon-pencil "></span></a>
+<div class="col-md-10 col-md-offset-1">
+  <div class="row">
+    <div class="col-md-12 clearfix">
+      <!--Literature Meta Info-->
+      <div class="row">
+        <input type="hidden" id="literature-id" value="<%=literature.id %>"/>
+        <div class="col-md-12 clearfix">
+          <h3><%=literature.title ? literature.title: '' %></h3>
         </div>
-      </div>
-      <div id="literature-meta" class="col-md-7">
-        <dl>
-          <dt>Year:</dt>
-          <dd><%=literature.year %></dd>
-
-          <dt>Authors:</dt>
-          <dd><span><%=literature.authors %></span></dd>
-
-          <% if (literature.file && literature.file.name) { %>
-          <dt>Full Text</dt>
-          <dd><span title="<%=literature.file.name + ' (' + literature.file.size + ')' %>" class="file-download-btn" title="download" data-filepath="<%=literature.file.path %>"><img src="/img/pdf.png" alt="pdf"></span></dd>
-          <% } %>
-
-          <% if (literature.accessories && literature.accessories.length) { %>
-          <dt>Accessories</dt>
-          <dd>
-              <% var extensions=['doc', 'pdf', 'docx', 'ppt', 'pptx', 'rar', 'zip']; %>
-              <% var types=['image', 'audio', 'video']; %>
-              <% for (var i = 0; i < literature.accessories.length; i++) { %>
-                <% var accessory = literature.accessories[i];
-                   var fileicon = 'file';
-                   if (extensions.indexOf(accessory.extension) >= 0) {
-                    fileicon = accessory.extension;
-                   } else if (types.indexOf(accessory.type) >= 0) {
-                    fileicon = accessory.type;
-                   }
-                %>
-                  <span  title="<%=accessory.name + ' (' + accessory.size + ')' %>" class="file-download-btn" data-filepath="<%=accessory.path %>"><img src="/img/<%=fileicon %>.png"></span>
-              <% } %>
-            <% } %>
-          </dd>
-        </dl>
-      </div>
-
-      <div id="literature-rating" class="col-md-3">
-        <h5>Rating</h5>
-        <span id="literature-rating-star">
-          <% if (literature.score_avg) { %>
-          <% var score = Math.floor(literature.score_avg); %>
-          <% for (var i = 0; i < score; i++) {%>
-             <i class='glyphicon glyphicon-star'></i>
-          <% } %>
-          <% for (var i = 0; i < (5 - score); i++) { %>
-             <i class='glyphicon glyphicon-star-empty'></i>
-          <% } %>
-          <%=literature.score_avg.toPrecision(2) %>
-          <% } %>
-          <p><%=literature.score_count ? literature.score_count : 0 %> people rated</p>
-        <span>
-      </div>
-    </div>
-    <br>
-    <br>
-
-    <ul class="nav nav-tabs">
-      <li class="active"><a href="#abstract" data-toggle="tab">Abstract</a></li>
-      <li><a href="#references" data-toggle="tab">References</a></li>
-      <li><a href="#cited" data-toggle="tab">Cited By</a></li>
-      <li><a href="#keywords" data-toggle="tab">Keywords</a></li>
-      <li><a href="#tags" data-toggle="tab">Tags</a></li>
-    </ul>
-
-    <div class="tab-content" id="literature-detail-tab">
-
-      <div class="tab-pane fade in active well" id="abstract">
-        <div><%=literature.abstract ? literature.abstract : 'No Abstract Yet!' %></div>
-        <br><br>
-        <% var printedKeys = ['url', 'pages', 'edition', 'publisher', 'editors', 'isbn', 'book_name', 'publication', 'volume', 'issue', 'doi', 'city', 'college'] %>
-        <% for (var i = 0; i < printedKeys.length; i++) {
-          if (literature.hasOwnProperty(printedKeys[i]) && literature[printedKeys[i]]) {
-        %>
-          <div>
-            <strong><%=printedKeys[i].toUpperCase() + ': ' %></strong>
-            <%=literature[printedKeys[i]] %>
+        <div class="col-md-3">
+          <img src="/img/paper.jpg" alt="160x160" class="img-thumbnail">
+          <br>
+          <div id="detail-edit-btn">
+            <a href="/literatures/update/<%=literature.id %>">Edit <span class="glyphicon glyphicon-pencil "></span></a>
           </div>
-          <% } %>
-        <% } %>
-      </div>
-
-
-      <div class="tab-pane fade well" id="references">
-        <div class="checkbox-options">
-          <% for (var i = 0; i < referenceType.length; i++) { %>
-          <label>
-            <input type="checkbox" checked value="<%=referenceType[i] %>"> <%=referenceType[i] %>
-          </label>
-          <% } %>
         </div>
-        <div>
-          <small><%=literature.references.length + ' References'%></small>
-        </div>
-        <ul>
-          <% for (var i = 0; i < literature.references.length; i++) { %>
-          <% var ref = literature.references[i]; %>
-          <li data-ref-type="<%=ref.type %>">
-            <% if (ref.id) { %>
-            <a href="/literatures/detail/<%=ref.id %>"><%=ref.title %></a>
-            <% } else { %>
-            <p><%=ref.title %></p>
+        <div id="literature-meta" class="col-md-6">
+          <dl>
+            <dt>Year:</dt>
+            <dd><%=literature.year %></dd>
+
+            <dt>Authors:</dt>
+            <dd><span><%=literature.authors %></span></dd>
+
+            <% if (literature.file && literature.file.name) { %>
+            <dt>Full Text</dt>
+            <dd><span title="<%=literature.file.name + ' (' + literature.file.size + ')' %>" class="file-download-btn" title="download" data-filepath="<%=literature.file.path %>"><img src="/img/pdf.png" alt="pdf"></span></dd>
             <% } %>
-          </li>
+
+            <% if (literature.accessories && literature.accessories.length) { %>
+            <dt>Accessories</dt>
+            <dd>
+                <% var extensions=['doc', 'pdf', 'docx', 'ppt', 'pptx', 'rar', 'zip']; %>
+                <% var types=['image', 'audio', 'video']; %>
+                <% for (var i = 0; i < literature.accessories.length; i++) { %>
+                  <% var accessory = literature.accessories[i];
+                     var fileicon = 'file';
+                     if (extensions.indexOf(accessory.extension) >= 0) {
+                      fileicon = accessory.extension;
+                     } else if (types.indexOf(accessory.type) >= 0) {
+                      fileicon = accessory.type;
+                     }
+                  %>
+                    <span  title="<%=accessory.name + ' (' + accessory.size + ')' %>" class="file-download-btn" data-filepath="<%=accessory.path %>"><img src="/img/<%=fileicon %>.png"></span>
+                <% } %>
+              <% } %>
+            </dd>
+          </dl>
+        </div>
+
+        <div id="literature-rating" class="col-md-3">
+          <h5>Rating</h5>
+          <span id="literature-rating-star">
+            <% if (literature.score_avg) { %>
+            <% var score = Math.floor(literature.score_avg); %>
+            <% for (var i = 0; i < score; i++) {%>
+               <i class='glyphicon glyphicon-star'></i>
+            <% } %>
+            <% for (var i = 0; i < (5 - score); i++) { %>
+               <i class='glyphicon glyphicon-star-empty'></i>
+            <% } %>
+            <%=literature.score_avg.toPrecision(2) %>
+            <% } %>
+            <p><%=literature.score_count ? literature.score_count : 0 %> people rated</p>
+          <span>
+        </div>
+      </div>
+      <br>
+      <br>
+
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#abstract" data-toggle="tab">Abstract</a></li>
+        <li><a href="#references" data-toggle="tab">References</a></li>
+        <li><a href="#cited" data-toggle="tab">Cited By</a></li>
+        <li><a href="#keywords" data-toggle="tab">Keywords</a></li>
+        <li><a href="#tags" data-toggle="tab">Tags</a></li>
+      </ul>
+
+      <div class="tab-content" id="literature-detail-tab">
+
+        <div class="tab-pane fade in active well" id="abstract">
+          <div><%=literature.abstract ? literature.abstract : 'No Abstract Yet!' %></div>
+          <br><br>
+          <% var printedKeys = ['url', 'pages', 'edition', 'publisher', 'editors', 'isbn', 'book_name', 'publication', 'volume', 'issue', 'doi', 'city', 'college'] %>
+          <% for (var i = 0; i < printedKeys.length; i++) {
+            if (literature.hasOwnProperty(printedKeys[i]) && literature[printedKeys[i]]) {
+          %>
+            <div>
+              <strong><%=printedKeys[i].toUpperCase() + ': ' %></strong>
+              <%=literature[printedKeys[i]] %>
+            </div>
+            <% } %>
           <% } %>
-        </ul>
-      </div>
-
-
-      <div class="tab-pane fade well" id="cited">
-        <div class="checkbox-options">
-          <% for (var i = 0; i < referenceType.length; i++) { %>
-          <label>
-            <input type="checkbox" checked value="<%=referenceType[i] %>"> <%=referenceType[i] %>
-          </label>
-          <% } %>
         </div>
-        <div>
-          <small><%=cited.length + ' Cited'%></small>
-        </div>
-        <ul>
-          <% for (var i = 0; i < cited.length; i++) { %>
-          <% var citedItem = cited[i]; %>
-          <li data-ref-type="<%=citedItem.type %>">
-            <a href="/literatures/detail/<%=citedItem.id %>"><%=citedItem.title %></a>
-          </li>
-          <% } %>
-        </ul>
-      </div>
 
 
-      <div class="tab-pane fade well" id="keywords">
-        <div>
-          <strong>KEYWORDS: </strong>
-          <%=literature.keywords ? literature.keywords : 'No Keywords Yet!' %>
+        <div class="tab-pane fade well" id="references">
+          <div class="checkbox-options">
+            <% for (var i = 0; i < referenceType.length; i++) { %>
+            <label>
+              <input type="checkbox" checked value="<%=referenceType[i] %>"> <%=referenceType[i] %>
+            </label>
+            <% } %>
+          </div>
+          <div>
+            <small><%=literature.references.length + ' References'%></small>
+          </div>
+          <ul>
+            <% for (var i = 0; i < literature.references.length; i++) { %>
+            <% var ref = literature.references[i]; %>
+            <li data-ref-type="<%=ref.type %>">
+              <% if (ref.id) { %>
+              <a href="/literatures/detail/<%=ref.id %>"><%=ref.title %></a>
+              <% } else { %>
+              <p><%=ref.title %></p>
+              <% } %>
+            </li>
+            <% } %>
+          </ul>
         </div>
-        <br>
-        <br>
-      </div>
 
-      <div class="tab-pane fade well" id="tags">
-        <div>
-          <strong>TAGS: </strong>
-          <%=literature.tags ? literature.tags : 'You can make detail comments to add tags!' %>
+
+        <div class="tab-pane fade well" id="cited">
+          <div class="checkbox-options">
+            <% for (var i = 0; i < referenceType.length; i++) { %>
+            <label>
+              <input type="checkbox" checked value="<%=referenceType[i] %>"> <%=referenceType[i] %>
+            </label>
+            <% } %>
+          </div>
+          <div>
+            <small><%=cited.length + ' Cited'%></small>
+          </div>
+          <ul>
+            <% for (var i = 0; i < cited.length; i++) { %>
+            <% var citedItem = cited[i]; %>
+            <li data-ref-type="<%=citedItem.type %>">
+              <a href="/literatures/detail/<%=citedItem.id %>"><%=citedItem.title %></a>
+            </li>
+            <% } %>
+          </ul>
         </div>
-        <br>
-        <br>
+
+
+        <div class="tab-pane fade well" id="keywords">
+          <div>
+            <strong>KEYWORDS: </strong>
+            <%=literature.keywords ? literature.keywords : 'No Keywords Yet!' %>
+          </div>
+          <br>
+          <br>
+        </div>
+
+        <div class="tab-pane fade well" id="tags">
+          <div>
+            <strong>TAGS: </strong>
+            <%=literature.tags ? literature.tags : 'You can make detail comments to add tags!' %>
+          </div>
+          <br>
+          <br>
+        </div>
       </div>
+    </div>
+
+  </div>
+
+  <div id="brief-comments">
+    <button class="btn btn-success pull-right" data-toggle="modal" data-target="#brief-comment-modal">Add brief comment</button>
+
+    <h3>Brief Comments</h3>
+    <hr>
+    <div id="brief-comments-list">
+
     </div>
   </div>
 
-</div>
+  <div id="rich-comments">
+    <input type="hidden" name="rich-comment-type" id="rich-comment-type" value="<%=escape(richCommentType) %>" />
+    <button class="btn btn-success pull-right" data-toggle="modal" data-target="#rich-comment-modal">Add detail comment</button>
 
-<div id="brief-comments">
-  <button class="btn btn-success pull-right" data-toggle="modal" data-target="#brief-comment-modal">Add brief comment</button>
-
-  <h3>Brief Comments</h3>
-  <hr>
-  <div id="brief-comments-list">
-
-  </div>
-</div>
-
-<div id="rich-comments">
-  <input type="hidden" name="rich-comment-type" id="rich-comment-type" value="<%=escape(richCommentType) %>" />
-  <button class="btn btn-success pull-right" data-toggle="modal" data-target="#rich-comment-modal">Add detail comment</button>
-
-  <h3>Detail Comments</h3>
-  <hr>
-  <div id="rich-comments-list">
+    <h3>Detail Comments</h3>
+    <hr>
+    <div id="rich-comments-list">
+    </div>
   </div>
 </div>
