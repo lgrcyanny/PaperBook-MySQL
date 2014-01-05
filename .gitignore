@@ -6,3 +6,4 @@ uploads/*
 npm-debug.log
 public/lib/highcharts
 db/backup.sql
+public/lib/highstock
