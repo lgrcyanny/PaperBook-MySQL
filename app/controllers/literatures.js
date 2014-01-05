@@ -62,7 +62,8 @@ exports.showUploadPage = function (req, res) {
 }
 
 exports.create = function (req, res, next) {
-  var literature = wrapLiteratureForDBSave(req.user.id, req.body.literature);
+  var literature = req.body.literature;
+  literature.user_id = req.user.id;
   //console.log(req.body);
   literatureModel.save(literature, function (err, result) {
     if (err) {
@@ -112,8 +113,9 @@ exports.showUpdatePage = function (req, res, next) {
 }
 
 exports.update = function (req, res, next) {
+  // The literatureID for update
   var id = req.param('updateId');
-  var literature = wrapLiteratureForDBSave(req.user.id, req.body.literature);
+  var literature = req.body.literature;
   literatureModel.update(id, literature, function (err, result) {
     if (err) {
       return next(err);
@@ -278,8 +280,9 @@ exports.fetchTags = function (req, res) {
 var uploadFile = function (file, type, username, res) {
   var filename = file.originalFilename;
   var filepath = file.path;
-  var filetype = file.type.split('/');
+  var filetype = file.type.split('/')[0];
   var filesize = getFileSize(file.size);
+  var fileExtension = filepath.substr(filepath.lastIndexOf('.') + 1);
 
   var year = moment().format('YYYY');
   var month = moment().format('MM');
@@ -301,9 +304,9 @@ var uploadFile = function (file, type, username, res) {
         success: true,
         file: {
           name: filename,
-          type: filetype[0],
+          type: filetype,
           size: filesize,
-          extension: filetype[1],
+          extension: fileExtension,
           path: serverpath
         }
       });
@@ -321,11 +324,6 @@ var getFileSize = function (size) {
     res = size + 'KB';
   }
   return res;
-}
-
-var wrapLiteratureForDBSave = function (userid, literature) {
-  literature.user_id = userid;
-  return literature;
 }
 
 var wrapLiteratureForShow = function (literature) {
