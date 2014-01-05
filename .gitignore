@@ -5,4 +5,8 @@ Makefile
 uploads/*
 config/npm-debug.log
 public/lib/highcharts
+<<<<<<< HEAD
 db/backup.sql
+=======
+public/lib/highstock
+>>>>>>> statistics

@@ -8,10 +8,20 @@ exports.globalView = function (req, res) {
 }
 
 exports.getGlobalViewData = function (req, res) {
-  Statistics.getGlobalViewData(function (results) {
+  Statistics.getGlobalViewData(function (highchartsData) {
     res.send({
       success: true,
-      results: results
+      highchartsData: highchartsData
+    });
+  })
+}
+
+exports.getUserViewData = function (req, res) {
+  Statistics.getUserViewData(req,function (highstockData) {
+    res.send({
+      success: true,
+      highstockData: highstockData,
+      username:req.user.username
     });
   })
 }

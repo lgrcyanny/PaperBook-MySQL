@@ -1,8 +1,11 @@
 <% layout('../layouts/default.ejs')  -%>
-<% script('/lib/highcharts/js/highcharts.js') -%>
-<% script('/lib/highcharts/js/modules/exporting.js') -%>
 <% script('/js/statistics-global.js') -%>
+<% script('/lib/highstock/js/highstock.js') -%>
+<% script('/lib/highstock/js/modules/exporting.js') -%>
+<% script('/js/statistics-user.js') -%>
 
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 
-<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<div id="globalView" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+<div id="userView" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
