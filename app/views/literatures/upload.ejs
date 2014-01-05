@@ -39,7 +39,7 @@
                   </div>
                 <% } else if (['year', 'volume', 'issue'].indexOf(item) >= 0) { %>
                   <div class="col-md-3">
-                    <input type="number" name="<%=item %>" id="<%=item %>" class="form-control" placeholder="<%=item %>"  value="0"/>
+                    <input type="number" name="<%=item %>" id="<%=item %>" class="form-control" placeholder="<%=item %>"  value="<%=item === 'year' ? 2014 : 0 %>"/>
                   </div>
                 <% } else { %>
                    <div class="col-md-11">
