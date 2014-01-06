@@ -74,7 +74,7 @@ module.exports = {
       .order('add_at');
     console.log(sql.toString());
     utils.exec(sql.toString(), null, function (err, results) {
-      if (err) {
+      if (err || results.length == 0) {
         results = [];
       };
 
@@ -108,6 +108,88 @@ module.exports = {
       });
       // console.log(highstockData);
       callback(highstockData);
+    });
+  },
+
+  getBriefCommentsData: function (req, callback) {
+    var sql = squel.select()
+      .field('created_at')
+      .from('paperbook.brief_comments')
+      .where('user_id=' + req.user.id)
+      .order('created_at');
+    console.log(sql.toString());
+    utils.exec(sql.toString(), null, function (err, results) {
+      if (err || results.length == 0) {
+        results = [];
+      };
+
+      var highstockData = [],
+        count = 0;
+
+      results.forEach(function (result, index) {
+        highstockData.push([new Date(result.created_at)
+          .getTime(), index + 1
+        ]);
+      });
+      // console.log(highstockData);
+     
+      var sql = squel.select()
+        .field('b.add_year', 'add_year')
+        .field('b.username', 'username')
+        .field('ifnull(a.brief_comments_count,0)', 'brief_comments_count')
+        .from(
+          squel.select()
+          .field('year(a.created_at)', 'add_year')
+          .field('b.username', 'username')
+          .field('count(*)', 'brief_comments_count')
+          .from('paperbook.brief_comments', 'a')
+          .join('paperbook.users', 'b', 'a.user_id = b.id')
+          .group('add_year')
+          .group('a.user_id')
+          .group('b.username'), 'a'
+      )
+        .right_join(
+          squel.select()
+          .field('distinct year(a.created_at)', 'add_year')
+          .field('username', 'username')
+          .from('paperbook.brief_comments', 'a')
+          .from('paperbook.users', 'b'), 'b', 'a.add_year=b.add_year and a.username=b.username'
+      )
+        .order('add_year')
+        .order('username');
+      console.log(sql.toString());
+      var highchartsData = Array();
+      utils.exec(sql.toString(), null, function (err, results) {
+        if (err) {
+          results = [];
+        };
+        while (results[0].add_year === null) {
+          results.shift();
+        }
+        var year = results[0].add_year,
+          index = 0,
+          temp = [];
+        results.forEach(function (result) {
+          var result_year = result.add_year;
+          if (year != result_year) {
+            highchartsData.push({
+              'index': index,
+              'name': 'Year ' + year,
+              'data': temp
+            });
+            year = result_year;
+            temp = [];
+          };
+          temp.push([result.username, result.brief_comments_count]);
+        });
+        highchartsData.push({
+          'index': index,
+          'name': 'Year ' + year,
+          'data': temp
+        });
+        callback(highchartsData,highstockData);
+      });
+
     });
   }
 }
