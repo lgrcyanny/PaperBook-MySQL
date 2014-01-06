@@ -3,13 +3,37 @@ $(function () {
   var rootURL = 'http://' + window.location.hostname + ':' + window.location.port;
 
   $.ajax({
-    url: rootURL + '/statistics/userViewData',
+    url: rootURL + '/statistics/rich-comments-data',
     type: 'GET',
     data: {},
     success: function (res) {
       if (res.success) {
-        console.log(res.highstockData);
-        $('div#userView')
+
+        $('div#globalView')
+          .highcharts({
+            chart: {
+              type: 'column',
+              inverted: true
+            },
+            title: {
+              text: 'Global View'
+            },
+            credits: {
+              enabled: false
+            },
+            yAxis: {
+              allowDecimals: false,
+              title: {
+                text: 'Comments'
+              }
+            },
+            xAxis: {
+              type: 'category'
+            },
+            series: res.highchartsData
+          });
+
+          $('div#userView')
           .highcharts('StockChart', {
             rangeSelector: {
               selected: 4
@@ -28,7 +52,7 @@ $(function () {
               allowDecimals: false
             },
             series: [{
-              name: 'Literatures',
+              name: 'Rich Comments',
               marker: {
                 enabled: true,
                 radius: 3
@@ -40,7 +64,9 @@ $(function () {
               data: res.highstockData
             }]
           });
+
       }
     }
   });
+
 })
