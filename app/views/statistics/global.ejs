@@ -1,8 +1,18 @@
 <% layout('../layouts/default.ejs')  -%>
-<% script('/lib/highcharts/js/highcharts.js') -%>
-<% script('/lib/highcharts/js/modules/exporting.js') -%>
-<% script('/js/statistics-global.js') -%>
 
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<ul class="nav nav-tabs">
+  <li class="active"><a href="#literature-stat" data-toggle="tab">Literature</a></li>
+  <li><a href="#brief-comment-stat" data-toggle="tab">Brief Comment</a></li>
+  <li><a href="#detail-comment-stat" data-toggle="tab">Detail Comment</a></li>
+</ul>
 
-<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<div class="tab-content">
+  <div class="tab-pane fade in active well" id="literature-stat">
+  </div>
+
+  <div class="tab-pane fade well" id="brief-comment-stat">
+  </div>
+
+   <div class="tab-pane fade well" id="detail-comment-stat">
+  </div>
+</div>
