@@ -52,6 +52,8 @@ module.exports = function (app, passport) {
   app.get('/statistics',statistics.globalView);
   app.get('/statistics/globalViewData', statistics.getGlobalViewData);
   app.get('/statistics/userViewData', statistics.getUserViewData);
+  app.get('/statistics/brief-comments',statistics.briefCommentsView);
+  app.get('/statistics/brief-comments-data', statistics.getBriefCommentsData);
 
   // Literature upload route
   app.post('/literatures', literatures.create);

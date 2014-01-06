@@ -23,7 +23,7 @@ $(function () {
             yAxis: {
               allowDecimals: false,
               title: {
-                text: 'Articles'
+                text: 'Literatures'
               }
             },
             xAxis: {
