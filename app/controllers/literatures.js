@@ -213,7 +213,8 @@ exports.showMyLiteraturePage = function (req, res, next) {
     //console.log(results);
     res.render('literatures/my-literature', {
       title: 'My Literature',
-      literatures: results
+      literatures: results,
+      moment: moment
     });
   });
 }

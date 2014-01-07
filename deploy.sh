@@ -1,8 +1,8 @@
 #!/bin/bash
 export PAPERBOOK_ROOT_DIR=/var/www/paperbook
-export PAPERBOOK_LOG_FOREVER=/var/www/paperbook-forever.log
-export PAPERBOOK_LOG_STDOUT=/var/www/paperbook.log
-export PAPERBOOK_LOG_STUERR=/var/www/paperbook-err.log
+export PAPERBOOK_LOG_FOREVER=/var/www/paperbooklog/forever.log
+export PAPERBOOK_LOG_STDOUT=/var/www/paperbooklog/stdout.log
+export PAPERBOOK_LOG_STDERR=/var/www/paperbooklog/stderr.log
 
 # Git update
 rm -Rf paperbook
@@ -17,7 +17,13 @@ chmod -R 777 $PAPERBOOK_ROOT_DIR/uploads
 cd $PAPERBOOK_ROOT_DIR
 mysql -u paperbook -ppaperbook -h localhost paperbook < paperbook.sql
 
+# Install package
+npm install
+cp $PAPERBOOK_ROOT_DIR/config/config.disk.js $PAPERBOOK_ROOT_DIR/config/config.js
+
 # Start Server
+# Clean log files
+rm -f $PAPERBOOK_LOG_FOREVER $PAPERBOOK_LOG_STDOUT $PAPERBOOK_LOG_STDERR
 cd $PAPERBOOK_ROOT_DIR
 forever stopall
-NODE_ENV=production forever start -l $PAPERBOOK_LOG_FOREVER -o $PAPERBOOK_LOG_STDOUT -e $PAPERBOOK_LOG_STUERR  server.js
+NODE_ENV=production forever start  server.js

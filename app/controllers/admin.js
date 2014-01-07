@@ -19,7 +19,8 @@ exports.showAdminPage = function (req, res) {
         literatureConfigInfo: configModel.literatureConfigInfo,
         richComment: config.rich_comment,
         referenceType: config.reference_type,
-        users: users
+        users: users,
+        moment: moment
       });
     });
   });
