@@ -32,8 +32,8 @@ module.exports = {
   production: {
     db: {
       host: 'localhost',
-      user: 'root',
-      password: 'root',
+      user: 'paperbook',
+      password: 'paperbook',
       database: 'paperbook'
     },
     root: rootPath,
