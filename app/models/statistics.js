@@ -11,7 +11,7 @@ module.exports = {
       .from('paperbook.literatures')
       .where('user_id=' + req.user.id)
       .order('add_at');
-    console.log(sql.toString());
+    // console.log(sql.toString());
     utils.exec(sql.toString(), null, function (err, results) {
       if (err || results.length == 0) {
         results = [];
@@ -116,7 +116,7 @@ module.exports = {
       .from('paperbook.brief_comments')
       .where('user_id=' + req.user.id)
       .order('created_at');
-    console.log(sql.toString());
+    // console.log(sql.toString());
     utils.exec(sql.toString(), null, function (err, results) {
       if (err || results.length == 0) {
         results = [];
@@ -198,7 +198,7 @@ module.exports = {
       .from('paperbook.rich_comments')
       .where('user_id=' + req.user.id)
       .order('created_at');
-    console.log(sql.toString());
+    // console.log(sql.toString());
     utils.exec(sql.toString(), null, function (err, results) {
       if (err || results.length == 0) {
         results = [];
