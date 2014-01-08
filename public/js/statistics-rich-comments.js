@@ -33,7 +33,7 @@ $(function () {
             series: res.highchartsData
           });
 
-          $('div#rich-comments-user-stat')
+        $('div#rich-comments-user-stat')
           .highcharts('StockChart', {
             rangeSelector: {
               selected: 4
