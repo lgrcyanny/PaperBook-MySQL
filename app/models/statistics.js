@@ -16,13 +16,15 @@ module.exports = {
       if (err || results.length == 0) {
         results = [];
       };
-
-      var highstockData = [],
-        year = new Date(results[0].add_at)
+      var highstockData = [];
+      if (results.length) {
+        var year = new Date(results[0].add_at)
           .getFullYear(),
         month = new Date(results[0].add_at)
           .getMonth(),
         count = 0;
+      }
+
       // results.forEach(function (result, index) {
       //   if (year != new Date(result.add_at)
       //     .getFullYear() || month != new Date(result.add_at)
