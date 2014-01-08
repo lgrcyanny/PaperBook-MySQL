@@ -49,12 +49,12 @@ module.exports = function (app, passport) {
   app.get('/advancedsearch/results',search.showAdvancedSearchResults);
 
   //Statistics route
-  app.get('/statistics', statistics.literaturesView);
-  app.get('/statistics/literatures', statistics.literaturesView);
+  app.get('/statistics', auth.requiresSignin, statistics.literaturesView);
+  app.get('/statistics/literatures', auth.requiresSignin, statistics.literaturesView);
   app.get('/statistics/literatures-data', statistics.getLiteraturesData);
-  app.get('/statistics/brief-comments',statistics.briefCommentsView);
+  app.get('/statistics/brief-comments', auth.requiresSignin, statistics.briefCommentsView);
   app.get('/statistics/brief-comments-data', statistics.getBriefCommentsData);
-  app.get('/statistics/rich-comments',statistics.richCommentsView);
+  app.get('/statistics/rich-comments', auth.requiresSignin, statistics.richCommentsView);
   app.get('/statistics/rich-comments-data', statistics.getRichCommentsData);
 
   // Literature upload route
