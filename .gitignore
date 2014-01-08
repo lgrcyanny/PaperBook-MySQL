@@ -4,5 +4,4 @@ config/config.js
 Makefile
 uploads/*
 npm-debug.log
-public/lib/highcharts
 db/backup.sql
