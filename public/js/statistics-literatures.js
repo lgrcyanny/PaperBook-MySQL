@@ -10,7 +10,7 @@ $(function () {
       if (res.success) {
         // console.log(res.highstockData);
 
-        $('div#userView')
+        $('div#literature-user-stat')
           .highcharts('StockChart', {
             rangeSelector: {
               selected: 4
@@ -40,7 +40,7 @@ $(function () {
             }]
           });
 
-        $('div#globalView')
+        $('div#literature-global-stat')
           .highcharts({
             chart: {
               type: 'column',

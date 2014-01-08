@@ -40,8 +40,13 @@
                 <li>
                   <a href="/myliterature">My Literature</a>
                 </li>
-                <li>
-                  <a href="/statistics">Statistics</a>
+                <li class="dropdown">
+                  <a href="/statistics" class="dropdown-toggle" data-toggle="dropdown">Statistics<b class="caret"></b></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="/statistics/literatures">Literature</a></li>
+                    <li><a href="/statistics/brief-comments">Brief comment</a></li>
+                    <li><a href="/statistics/rich-comments">Detail comment</a></li>
+                  </ul>
                 </li>
                 <% if (req.user && req.user.user_type > 0) { %>
                 <li>

@@ -9,7 +9,7 @@ $(function () {
     success: function (res) {
       if (res.success) {
 
-        $('div#globalView')
+        $('div#brief-comments-global-stat')
           .highcharts({
             chart: {
               type: 'column',
@@ -33,7 +33,7 @@ $(function () {
             series: res.highchartsData
           });
 
-          $('div#userView')
+          $('div#brief-comments-user-stat')
           .highcharts('StockChart', {
             rangeSelector: {
               selected: 4

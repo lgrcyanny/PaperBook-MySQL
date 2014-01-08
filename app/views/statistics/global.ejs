@@ -1,0 +1,31 @@
+<% layout('../layouts/default.ejs')  -%>
+<% script('/lib/highstock/js/highstock.js') -%>
+<% script('/lib/highstock/js/modules/exporting.js') -%>
+<% script('/js/statistics-literatures.js') -%>
+<% script('/js/statistics-brief-comments.js') -%>
+<% script('/js/statistics-rich-comments.js') -%>
+
+<ul class="nav nav-tabs">
+  <li class="active"><a href="#literature-stat" data-toggle="tab">Literature</a></li>
+  <li><a href="#brief-comment-stat" data-toggle="tab">Brief Comment</a></li>
+  <li><a href="#detail-comment-stat" data-toggle="tab">Detail Comment</a></li>
+</ul>
+
+
+<div class="tab-content" id="stat-panal">
+  <div class="tab-pane fade in active well" id="literature-stat">
+  	<div id="literature-global-stat"></div>
+    <div id="literature-user-stat"></div>
+  </div>
+
+  <div class="tab-pane fade well in active" id="brief-comment-stat">
+    <div id="brief-comments-global-stat"></div>
+    <div id="brief-comments-user-stat"></div>
+  </div>
+
+   <div class="tab-pane fade well in active" id="detail-comment-stat">
+    <div id="rich-comments-global-stat"></div>
+    <div id="rich-comments-user-stat"></div>
+  </div>
+</div>
+
